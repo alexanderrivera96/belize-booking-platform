@@ -247,3 +247,12 @@ hr { border: 0; border-top: 1px solid var(--line); margin: 1.5rem 0; }
 @media (max-width: 760px) { .biz-layout, .book-layout { grid-template-columns: 1fr; } }
 .announce { padding: .6rem 0; font-size: .95rem; background: var(--primary-soft); color: var(--ink); border-bottom: 1px solid var(--line); }
 .announce-warning { background: var(--warn-soft); }
+/* grid children must be allowed to shrink so the scrolling day strip never widens the page */
+.grid > *, .biz-layout > *, .book-layout > * { min-width: 0; }
+.nav a, .nav button.linklike { white-space: nowrap; }
+@media (max-width: 520px) {
+  .nav { gap: 0; }
+  .nav a, .nav button.linklike { padding: .4rem .45rem; font-size: .88rem; }
+  .nav .hide-sm { display: none; }
+  .brand { font-size: 1.2rem; }
+}

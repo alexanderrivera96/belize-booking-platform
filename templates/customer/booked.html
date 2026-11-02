@@ -20,7 +20,9 @@
       <dt>Price</dt><dd>{{ appt.price_cents|bzd }}{% if not PAYMENTS_ENABLED %} <small class="muted">(pay at your visit)</small>{% endif %}</dd>
     </dl>
   </div>
-  {% if not user.email and user.email_prompt_count < 2 %}
+  {% if user.pending_email %}
+  <div class="card card-flat"><strong>Check your email</strong><p class="muted" style="margin:.2rem 0 .6rem">We sent a code to {{ user.pending_email }}. Verify it to get receipts and a backup way to sign in.</p><a class="btn btn-secondary btn-sm" href="/account/">Verify email</a></div>
+  {% elif not user.email and user.email_prompt_count < 2 %}
   <div class="card card-flat"><strong>Add your email</strong><p class="muted" style="margin:.2rem 0 .6rem">For receipts, and to get back into your account if you change your number.</p><a class="btn btn-secondary btn-sm" href="/account/">Add email</a></div>
   {% endif %}
   <div class="row" style="margin-top:1.2rem"><a class="btn" href="/me/">My bookings</a><a class="btn btn-secondary" href="/b/{{ b.slug }}/">Back to {{ b.name }}</a></div>

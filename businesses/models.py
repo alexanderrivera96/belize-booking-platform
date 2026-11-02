@@ -87,7 +87,7 @@ class Business(models.Model):
 
     @property
     def initials(self):
-        return "".join(w[0] for w in self.name.split()[:2]).upper()
+        return "".join(w[0] for w in self.name.split() if w[0].isalnum())[:2].upper()
 
     @property
     def owner_membership(self):
@@ -179,7 +179,7 @@ class Staff(models.Model):
 
     @property
     def initials(self):
-        return "".join(w[0] for w in self.display_name.split()[:2]).upper()
+        return "".join(w[0] for w in self.display_name.split() if w[0].isalnum())[:2].upper()
 
     def rotate_feed_token(self) -> str:
         """New private iCal link; the old one stops working. Only the hash is stored."""

@@ -33,7 +33,7 @@ def status_badge(status):
 
 @register.filter
 def initials(name):
-    return "".join(w[0] for w in str(name).split()[:2]).upper()
+    return "".join(w[0] for w in str(name).split() if w[0].isalnum())[:2].upper()
 
 
 @register.filter
