@@ -1,0 +1,19 @@
+{% extends "admin/index.html" %}
+{% block content %}
+  <div class="module" style="margin-bottom:20px"><h2>Platform at a glance</h2>
+    <table style="width:100%"><tbody><tr>{% for label, n in stats %}<td style="text-align:center;padding:14px"><div style="font-size:1.8em;font-weight:bold">{{ n }}</div><div class="help">{{ label }}</div></td>{% endfor %}</tr></tbody></table>
+  </div>
+  <div class="module" style="margin-bottom:20px"><h2>Quick actions</h2>
+    <p style="padding:8px 12px"><a class="button" href="{% url 'admin:onboard_provider' %}">+ Add a service provider</a>
+    <a class="button" href="{% url 'admin:businesses_business_changelist' %}?status__exact=draft">Review drafts</a>
+    <a class="button" href="{% url 'admin:platform_admin_sitesettings_changelist' %}">Site settings &amp; banner</a>
+    <a class="button" href="{% url 'admin:businesses_category_changelist' %}">Categories</a>
+    <a class="button" href="{% url 'admin:businesses_town_changelist' %}">Towns</a></p>
+  </div>
+  <div class="module" style="margin-bottom:20px"><h2>Newest businesses</h2>
+    <table style="width:100%"><tbody>{% for b in recent_businesses %}<tr><td><a href="{% url 'admin:businesses_business_change' b.id %}">{{ b.name }}</a></td><td>{{ b.category }}</td><td>{{ b.town }}</td><td>{{ b.get_status_display }}</td></tr>{% empty %}<tr><td>None yet.</td></tr>{% endfor %}</tbody></table>
+  </div>
+  {% if recent_actions %}<div class="module" style="margin-bottom:20px"><h2>Recent admin actions</h2>
+    <table style="width:100%"><tbody>{% for a in recent_actions %}<tr><td>{{ a.at|date:"j M H:i" }}</td><td>{{ a.admin }}</td><td>{{ a.action }}</td><td>{{ a.target }}</td></tr>{% endfor %}</tbody></table></div>{% endif %}
+  {{ block.super }}
+{% endblock %}

@@ -213,3 +213,8 @@ LOGGING = {
     "handlers": {"console": {"class": "logging.StreamHandler", "formatter": "plain"}},
     "root": {"handlers": ["console"], "level": "INFO"},
 }
+
+# Admin console MFA enrolment: allow an admin with no authenticator to enrol on first password sign-in.
+# Turn off in production once every admin is enrolled; then use `manage.py enroll_admin_mfa`.
+ADMIN_ALLOW_SELF_ENROLL = env_bool("ADMIN_ALLOW_SELF_ENROLL", True)
+OTP_TOTP_ISSUER = PLATFORM_NAME

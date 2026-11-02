@@ -1,0 +1,5 @@
+<div class="form-row{% if field.errors %} errors{% endif %}">
+  {% if field.errors %}<ul class="errorlist">{% for e in field.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+  <div class="flex-container"><label for="{{ field.id_for_label }}"{% if field.field.required %} class="required"{% endif %}>{{ field.label }}:</label>{{ field }}</div>
+  {% if field.help_text %}<div class="help">{{ field.help_text }}</div>{% endif %}
+</div>

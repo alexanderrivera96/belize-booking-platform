@@ -1,0 +1,20 @@
+{% extends "admin/base_site.html" %}
+{% block breadcrumbs %}<div class="breadcrumbs"><a href="{% url 'admin:index' %}">Home</a> › Add a service provider</div>{% endblock %}
+{% block content %}
+<div id="content-main" style="max-width:760px">
+  <p>Creates the business, the owner's login (they sign in with a code to their phone), booking rules, and optionally their first services and hours. You can fine-tune everything afterwards on the business page.</p>
+  <form method="post" novalidate>{% csrf_token %}
+    {% if form.non_field_errors %}<p class="errornote">{{ form.non_field_errors|join:" " }}</p>{% endif %}
+    <fieldset class="module aligned"><h2>Business</h2>
+      {% for field in form %}{% if forloop.counter <= 6 %}{% include "platform_admin/_row.html" %}{% endif %}{% endfor %}
+    </fieldset>
+    <fieldset class="module aligned"><h2>Owner</h2>
+      {% for field in form %}{% if forloop.counter > 6 and forloop.counter <= 10 %}{% include "platform_admin/_row.html" %}{% endif %}{% endfor %}
+    </fieldset>
+    <fieldset class="module aligned"><h2>Setup</h2>
+      {% for field in form %}{% if forloop.counter > 10 %}{% include "platform_admin/_row.html" %}{% endif %}{% endfor %}
+    </fieldset>
+    <div class="submit-row"><input type="submit" class="default" value="Create provider"></div>
+  </form>
+</div>
+{% endblock %}

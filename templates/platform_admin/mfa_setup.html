@@ -1,0 +1,22 @@
+{% extends "admin/base_site.html" %}
+{% block content %}
+<div style="max-width:560px">
+{% if backup_codes %}
+  <h2>Two-step sign-in is on</h2>
+  <p>Save these one-time backup codes somewhere safe (a password manager). Each works once if you lose your phone. They won't be shown again.</p>
+  <pre style="font-size:1.2em;line-height:1.8;padding:1em;background:var(--darkened-bg)">{% for c in backup_codes %}{{ c }}
+{% endfor %}</pre>
+  <p><a class="button" href="{% url 'admin:index' %}">Continue to the console</a></p>
+{% else %}
+  <h2>Set up your authenticator app</h2>
+  <ol><li>Open Google Authenticator, Microsoft Authenticator, 1Password or similar.</li><li>Scan this code (or enter the key below).</li><li>Type the 6-digit code it shows.</li></ol>
+  <p><img src="{{ qr }}" alt="QR code for your authenticator app" width="220" height="220" style="background:#fff;padding:8px"></p>
+  <p>Key: <code style="letter-spacing:.1em">{{ secret }}</code></p>
+  <form method="post">{% csrf_token %}
+    {% if form.errors %}<p class="errornote">{% for f in form %}{{ f.errors|join:" " }}{% endfor %}</p>{% endif %}
+    <div class="form-row"><label for="id_token" style="display:block;font-weight:bold">{{ form.token.label }}</label>{{ form.token }}</div>
+    <div class="submit-row"><input type="submit" value="Turn on two-step sign-in"></div>
+  </form>
+{% endif %}
+</div>
+{% endblock %}

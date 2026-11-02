@@ -23,6 +23,7 @@
     </nav>
   </div>
 </header>
+{% if SITE.announcement %}<div class="announce announce-{{ SITE.announcement_level }}"><div class="wrap">{{ SITE.announcement }}</div></div>{% endif %}
 <main>
   <div class="wrap">{% include "includes/messages.html" %}</div>
   {% block content %}{% endblock %}
@@ -30,7 +31,7 @@
 <footer class="footer">
   <div class="wrap spread">
     <span>© {% now "Y" %} {{ PLATFORM_NAME }} · Made in Belize · Prices in BZ$</span>
-    <span><a href="/for-business/">List your business</a> · <a href="/privacy/">Privacy</a></span>
+    <span>{% if SITE.support_phone %}Help: {{ SITE.support_phone }} · {% endif %}<a href="/for-business/">List your business</a> · <a href="/privacy/">Privacy</a></span>
   </div>
 </footer>
 </body>

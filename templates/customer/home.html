@@ -2,8 +2,8 @@
 {% block content %}
 <section class="hero">
   <div class="wrap">
-    <h1>Book your next cut, braids or nails — in under a minute.</h1>
-    <p class="lead">Find barbers, stylists, nail and lash techs, massage and dental services across Belize. Pick a time, get a WhatsApp reminder, done.</p>
+    <h1>{{ SITE.home_headline|default:"Book your next cut, braids or nails — in under a minute." }}</h1>
+    <p class="lead">{{ SITE.home_subheadline|default:"Find barbers, stylists, nail and lash techs, massage and dental services across Belize. Pick a time, get a WhatsApp reminder, done." }}</p>
     {% include "customer/_searchbar.html" %}
     <div class="chips" style="margin-top:1rem">
       {% for c in categories %}<a class="chip" href="/search/?category={{ c.slug }}">{{ c.name }}</a>{% endfor %}

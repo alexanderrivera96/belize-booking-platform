@@ -1,0 +1,12 @@
+{% extends "admin/base_site.html" %}
+{% block content %}
+<div style="max-width:420px">
+  <p>Sign in with your phone, password and authenticator code. Text and email codes are not accepted here.</p>
+  <form method="post" novalidate>{% csrf_token %}
+    {% if form.non_field_errors %}<p class="errornote">{{ form.non_field_errors|join:" " }}</p>{% endif %}
+    {% for field in form %}<div class="form-row"><label for="{{ field.id_for_label }}" style="display:block;font-weight:bold">{{ field.label }}</label>{{ field }}{% if field.help_text %}<div class="help">{{ field.help_text }}</div>{% endif %}</div>{% endfor %}
+    <div class="submit-row"><input type="submit" value="Sign in"></div>
+  </form>
+  <p class="help">First time? Leave the authenticator code empty — you'll set it up next.</p>
+</div>
+{% endblock %}

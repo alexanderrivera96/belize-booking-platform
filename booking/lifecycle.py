@@ -105,6 +105,9 @@ def create_hold(*, business, service, staff_candidates, starts_at, checkout_toke
     now = now or timezone.now()
     if not business.is_bookable:
         raise BookingError("This business isn't taking online bookings right now.")
+    from platform_admin.models import SiteSettings
+    if SiteSettings.load().new_bookings_paused:
+        raise BookingError("Online booking is paused for a few minutes. Please try again shortly.")
     previous = Appointment.objects.filter(status=S.HELD, checkout_token=checkout_token).values_list("id", flat=True)
     previous_id = previous.first()
     policy = business.booking_policy
