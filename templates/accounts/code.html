@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}Enter your code · {{ PLATFORM_NAME }}{% endblock %}
+{% block content %}
+<div class="narrow" style="padding-top:2.5rem">
+  <h1>Enter your code</h1>
+  <p class="muted">We sent a 6-digit code to <strong>{{ phone }}</strong>{% if channel != "email" %} by {% if channel == "sms" %}SMS{% else %}WhatsApp{% endif %}{% endif %}. It expires in 10 minutes.</p>
+  {% include "includes/devcode.html" %}
+  <form method="post" class="card">
+    {% csrf_token %}<input type="hidden" name="next" value="{{ next }}">
+    {% include "includes/form.html" %}
+    <button class="btn btn-block" type="submit">Continue</button>
+  </form>
+  <p class="muted" style="margin-top:1rem"><a href="{% if email_mode %}/login/email/{% else %}/login/{% endif %}">Didn't get it? Send a new code</a></p>
+</div>
+{% endblock %}

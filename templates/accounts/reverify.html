@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block title %}Confirm it's you · {{ PLATFORM_NAME }}{% endblock %}
+{% block content %}
+<div class="narrow" style="padding-top:2.5rem">
+  <h1>Confirm it's you</h1>
+  <p class="muted">For your clients' privacy, the business dashboard asks for a fresh code every 30 days, and for sensitive changes.</p>
+  {% include "includes/devcode.html" %}
+  {% if not sent %}
+  <form method="post" class="card">{% csrf_token %}<input type="hidden" name="next" value="{{ next }}">
+    <p>We'll send a code to <strong>{{ user.phone }}</strong>.</p>
+    <button class="btn btn-block" name="send" value="1" type="submit">Send code</button>
+  </form>
+  {% else %}
+  <form method="post" class="card">{% csrf_token %}<input type="hidden" name="next" value="{{ next }}">
+    {% include "includes/form.html" %}
+    <button class="btn btn-block" type="submit">Continue</button>
+  </form>
+  <form method="post" style="margin-top:.75rem">{% csrf_token %}<input type="hidden" name="next" value="{{ next }}">
+    <button class="btn btn-ghost btn-sm" name="send" value="1" type="submit">Send a new code</button></form>
+  {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,12 @@
+<div class="field">
+  {% if field.field.widget.input_type == "checkbox" %}
+    <label class="checkbox">{{ field }} {{ field.label }}</label>
+  {% elif field.field.widget.input_type == "radio" %}
+    <label>{{ field.label }}</label>
+    <div class="radios">{% for r in field %}<label>{{ r.tag }} {{ r.choice_label }}</label>{% endfor %}</div>
+  {% else %}
+    <label for="{{ field.id_for_label }}">{{ field.label }}</label>{{ field }}
+  {% endif %}
+  {% if field.help_text %}<div class="help">{{ field.help_text }}</div>{% endif %}
+  {% if field.errors %}<div class="errors">{{ field.errors|join:" " }}</div>{% endif %}
+</div>

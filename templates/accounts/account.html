@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}Your account · {{ PLATFORM_NAME }}{% endblock %}
+{% block content %}
+<div class="narrow" style="padding-top:2rem">
+  <h1>{% if welcome %}Welcome! What's your name?{% else %}Your account{% endif %}</h1>
+  <p class="muted">Signed in as {{ user.phone }}.</p>
+  <form method="post" class="card">{% csrf_token %}<input type="hidden" name="next" value="{{ next }}">
+    {% include "includes/form.html" %}
+    {% if user.email %}<p class="muted">Verified email: <strong>{{ user.email }}</strong></p>{% endif %}
+    <button class="btn" type="submit">Save</button>
+  </form>
+  {% if user.pending_email %}
+  <form method="post" action="/account/verify-email/" class="card" style="margin-top:1rem">{% csrf_token %}
+    <h3>Verify {{ user.pending_email }}</h3>
+    {% include "includes/devcode.html" %}
+    <div class="field"><label for="ev-code">Code from the email</label>
+      <input id="ev-code" name="code" class="code-input" inputmode="numeric" autocomplete="one-time-code" required></div>
+    <button class="btn btn-secondary" type="submit">Verify email</button>
+  </form>
+  {% endif %}
+  <div class="card card-flat" style="margin-top:1rem">
+    <h3>Security</h3>
+    <p class="muted">Lost a phone or used a shared device? Sign out everywhere.</p>
+    <form method="post" action="/account/sign-out-everywhere/" data-confirm="Sign out on every device?">{% csrf_token %}
+      <button class="btn btn-danger btn-sm" type="submit">Sign out of all devices</button></form>
+  </div>
+</div>
+{% endblock %}

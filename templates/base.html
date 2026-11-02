@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+<head>
+{% include "includes/head.html" %}
+<title>{% block title %}{{ PLATFORM_NAME }} — book barbers, braids, nails & more in Belize{% endblock %}</title>
+<meta name="description" content="{% block description %}Find and book local barbers, hair stylists, nail and lash techs, massage and dental services across Belize.{% endblock %}">
+</head>
+<body>
+<header class="topbar">
+  <div class="wrap">
+    <a class="brand" href="/">Book<span>BZ</span></a>
+    <nav class="nav" aria-label="Main">
+      <a href="/search/">Explore</a>
+      {% if user.is_authenticated %}
+        <a href="/me/">My bookings</a>
+        {% if user.memberships.exists %}<a href="/provider/">Business</a>{% endif %}
+        <a href="/account/">Account</a>
+        <form class="inline-form" method="post" action="/logout/">{% csrf_token %}<button class="linklike nav-btn" type="submit">Sign out</button></form>
+      {% else %}
+        <a href="/login/">Sign in</a>
+        <a href="/for-business/">For business</a>
+      {% endif %}
+    </nav>
+  </div>
+</header>
+<main>
+  <div class="wrap">{% include "includes/messages.html" %}</div>
+  {% block content %}{% endblock %}
+</main>
+<footer class="footer">
+  <div class="wrap spread">
+    <span>© {% now "Y" %} {{ PLATFORM_NAME }} · Made in Belize · Prices in BZ$</span>
+    <span><a href="/for-business/">List your business</a> · <a href="/privacy/">Privacy</a></span>
+  </div>
+</footer>
+</body>
+</html>
