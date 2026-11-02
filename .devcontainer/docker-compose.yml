@@ -1,0 +1,29 @@
+services:
+  app:
+    image: mcr.microsoft.com/devcontainers/python:3.13
+    volumes:
+      - ../..:/workspaces:cached
+    command: sleep infinity
+    environment:
+      DJANGO_DEBUG: "1"
+      DATABASE_URL: postgres://booking:booking@db:5432/booking
+      REDIS_URL: redis://redis:6379/0
+      TEST_ENVIRONMENT: "1"
+    depends_on: [db, redis]
+
+  db:
+    image: postgres:16
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: booking
+      POSTGRES_USER: booking
+      POSTGRES_PASSWORD: booking
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  redis:
+    image: redis:7
+    restart: unless-stopped
+
+volumes:
+  pgdata:

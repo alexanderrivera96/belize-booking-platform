@@ -32,6 +32,15 @@ SECRET_KEY_FALLBACKS = env_list("DJANGO_SECRET_KEY_FALLBACKS")
 ALLOWED_HOSTS = env_list("DJANGO_ALLOWED_HOSTS", "localhost,127.0.0.1,testserver")
 CSRF_TRUSTED_ORIGINS = env_list("DJANGO_CSRF_TRUSTED_ORIGINS")
 
+# GitHub Codespaces test environment: forwarded ports arrive as https://<codespace>-<port>.app.github.dev
+CODESPACE_NAME = env("CODESPACE_NAME")
+CODESPACES_DOMAIN = env("GITHUB_CODESPACES_PORT_FORWARDING_DOMAIN", "app.github.dev")
+if CODESPACE_NAME:
+    ALLOWED_HOSTS += [f".{CODESPACES_DOMAIN}", "localhost", "127.0.0.1"]
+    CSRF_TRUSTED_ORIGINS += [f"https://*.{CODESPACES_DOMAIN}"]
+    SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+    USE_X_FORWARDED_HOST = True
+
 SITE_ROLE = env("SITE_ROLE", "public")          # "public" | "admin"
 if SITE_ROLE not in ("public", "admin"):
     raise RuntimeError("SITE_ROLE must be 'public' or 'admin'")
@@ -169,7 +178,8 @@ if not DEBUG:
 
 # ---- Platform behaviour ----
 PAYMENTS_ENABLED = env_bool("PAYMENTS_ENABLED", False)
-PUBLIC_BASE_URL = env("PUBLIC_BASE_URL", "http://localhost:8000")
+PUBLIC_BASE_URL = env("PUBLIC_BASE_URL") or (
+    f"https://{CODESPACE_NAME}-8000.{CODESPACES_DOMAIN}" if CODESPACE_NAME else "http://localhost:8000")
 PLATFORM_NAME = env("PLATFORM_NAME", "BookBZ")
 OTP_BACKEND = env("OTP_BACKEND", "console")
 MESSAGING_BACKEND = env("MESSAGING_BACKEND", "console")

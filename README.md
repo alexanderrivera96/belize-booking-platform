@@ -40,6 +40,10 @@ Demo logins:
 - Business owners: `600 1001` (Fade Kings Barbershop), `600 2002` (Crown & Coils, approval mode), `600 3003` (Island Nails & Lashes) at `/provider/`.
 - Admin console (port 8001): phone `+5016009999`, password `admin-demo-password-change-me`; leave the authenticator code empty the first time and scan the QR code to enrol.
 
+### Test online with GitHub Codespaces
+
+On the repo page: **Code → Codespaces → Create codespace on main**. It installs everything, loads the demo data and starts the site (port 8000) and admin console (port 8001) on `https://<codespace>-<port>.app.github.dev` links. See `.devcontainer/TESTING.md`.
+
 ### Docker
 
 ```bash

@@ -1,0 +1,18 @@
+{
+  "name": "BookBZ test environment",
+  "dockerComposeFile": "docker-compose.yml",
+  "service": "app",
+  "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
+  "postCreateCommand": "bash .devcontainer/setup.sh",
+  "postStartCommand": "bash .devcontainer/start.sh",
+  "forwardPorts": [8000, 8001],
+  "portsAttributes": {
+    "8000": { "label": "Customer site + provider dashboard", "onAutoForward": "openBrowser" },
+    "8001": { "label": "Admin console", "onAutoForward": "notify" }
+  },
+  "customizations": {
+    "codespaces": { "openFiles": [".devcontainer/TESTING.md"] },
+    "vscode": { "extensions": ["ms-python.python"] }
+  },
+  "hostRequirements": { "cpus": 2, "memory": "4gb" }
+}
