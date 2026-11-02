@@ -160,6 +160,10 @@ if not DEBUG:
     SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
     SECURE_HSTS_SECONDS = int(env("DJANGO_HSTS_SECONDS", "86400"))
     SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+    SECURE_HSTS_PRELOAD = env_bool("DJANGO_HSTS_PRELOAD", False)
+    if not SECURE_HSTS_PRELOAD:
+        # Security plan: start HSTS at 1 day, raise it, then opt in to preload once every subdomain is HTTPS.
+        SILENCED_SYSTEM_CHECKS = ["security.W021"]
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
 

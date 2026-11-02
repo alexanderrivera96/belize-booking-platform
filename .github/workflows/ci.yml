@@ -1,0 +1,47 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_DB: booking
+          POSTGRES_USER: booking
+          POSTGRES_PASSWORD: booking
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U booking" --health-interval 5s --health-timeout 5s --health-retries 10
+    env:
+      DJANGO_DEBUG: "1"
+      DATABASE_URL: postgres://booking:booking@localhost:5432/booking
+    steps:
+      # Third-party actions pinned to full commit SHAs (security plan: supply chain).
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - uses: actions/setup-python@0b93645e9fea7318ecaed2b359559ac225c90a2b # v5.3.0
+        with:
+          python-version: "3.13"
+      - run: pip install -r requirements.txt
+      - name: Migrations are complete
+        run: python manage.py makemigrations --check --dry-run
+      - name: Tests (engine, reminders, cross-tenant suite)
+        run: python manage.py test tests
+      - name: Deploy checks
+        env:
+          DJANGO_DEBUG: "0"
+          DJANGO_SECRET_KEY: ci-only-not-secret-0123456789abcdefghijklmnopqrstuvwxyz
+          DJANGO_ALLOWED_HOSTS: example.com
+        run: python manage.py check --deploy --fail-level WARNING
+      - name: Admin host checks
+        env:
+          SITE_ROLE: admin
+        run: python manage.py check

@@ -292,7 +292,7 @@ def create_provider_booking(*, business, staff, service, customer, starts_at, me
         if is_overlap_violation(exc):
             raise SlotTaken("That time overlaps another booking for this staff member.")
         raise
-    emit(appt, "appointment.confirmed", actor=str(member.user_id))
+    emit(appt, "appointment.confirmed", actor=str(member.user_id) if member else None)
     return appt
 
 
