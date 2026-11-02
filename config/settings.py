@@ -41,6 +41,15 @@ if CODESPACE_NAME:
     SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
     USE_X_FORWARDED_HOST = True
 
+# Render: each service gets https://<name>.onrender.com; custom domains come from DJANGO_ALLOWED_HOSTS.
+RENDER_HOST = env("RENDER_EXTERNAL_HOSTNAME")
+if RENDER_HOST:
+    ALLOWED_HOSTS.append(RENDER_HOST)
+    CSRF_TRUSTED_ORIGINS.append(f"https://{RENDER_HOST}")
+CSRF_TRUSTED_ORIGINS += [f"https://{h.lstrip('.')}" for h in ALLOWED_HOSTS
+                         if h not in ("localhost", "127.0.0.1", "testserver") and "*" not in h
+                         and f"https://{h.lstrip('.')}" not in CSRF_TRUSTED_ORIGINS]
+
 SITE_ROLE = env("SITE_ROLE", "public")          # "public" | "admin"
 if SITE_ROLE not in ("public", "admin"):
     raise RuntimeError("SITE_ROLE must be 'public' or 'admin'")
@@ -73,7 +82,9 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    "core.middleware.HealthCheckMiddleware",      # answers /healthz before host checks and HTTPS redirect
     "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     "core.middleware.SecurityHeadersMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -136,6 +147,11 @@ USE_TZ = True
 STATIC_URL = "/static/"
 STATICFILES_DIRS = [BASE_DIR / "static"]
 STATIC_ROOT = BASE_DIR / "staticfiles"
+STORAGES = {
+    "default": {"BACKEND": "django.core.files.storage.FileSystemStorage"},
+    "staticfiles": {"BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage" if not DEBUG
+                    else "django.contrib.staticfiles.storage.StaticFilesStorage"},
+}
 
 PHONENUMBER_DEFAULT_REGION = "BZ"
 PHONENUMBER_DEFAULT_FORMAT = "E164"
@@ -179,6 +195,7 @@ if not DEBUG:
 # ---- Platform behaviour ----
 PAYMENTS_ENABLED = env_bool("PAYMENTS_ENABLED", False)
 PUBLIC_BASE_URL = env("PUBLIC_BASE_URL") or (
+    f"https://{env('PUBLIC_HOST')}" if env("PUBLIC_HOST") else
     f"https://{CODESPACE_NAME}-8000.{CODESPACES_DOMAIN}" if CODESPACE_NAME else "http://localhost:8000")
 PLATFORM_NAME = env("PLATFORM_NAME", "BookBZ")
 OTP_BACKEND = env("OTP_BACKEND", "console")
@@ -188,6 +205,8 @@ TWILIO_AUTH_TOKEN = env("TWILIO_AUTH_TOKEN", "")
 TWILIO_VERIFY_SERVICE_SID = env("TWILIO_VERIFY_SERVICE_SID", "")
 TWILIO_SMS_FROM = env("TWILIO_SMS_FROM", "")
 TWILIO_WHATSAPP_FROM = env("TWILIO_WHATSAPP_FROM", "")
+# WhatsApp needs an approved WhatsApp sender. Until then every code and reminder goes by SMS.
+WHATSAPP_ENABLED = bool(TWILIO_WHATSAPP_FROM) or OTP_BACKEND == "console"
 OTP_ALLOWED_COUNTRY_CODES = [501]                 # SEC2: Belize only at launch
 
 # ---- Django REST Framework: deny by default ----

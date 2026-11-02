@@ -43,7 +43,7 @@ def login_phone(request):
             form.add_error("phone", str(e))
         else:
             request.session["login_phone"] = phone
-            request.session["login_channel"] = form.cleaned_data["channel"]
+            request.session["login_channel"] = otp.effective_channel(form.cleaned_data["channel"])
             return redirect(f"/login/code/?next={nxt}" if nxt else "/login/code/")
     return render(request, "accounts/login.html", {"form": form, "next": nxt})
 

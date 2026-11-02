@@ -1,9 +1,31 @@
 from django import forms
+from django.conf import settings
 
 from .models import Channel
 
 
-class PhoneForm(forms.Form):
+def channel_choices():
+    """Hide WhatsApp until an approved WhatsApp sender is configured."""
+    return Channel.choices if settings.WHATSAPP_ENABLED else [(Channel.SMS, "SMS")]
+
+
+def default_channel():
+    return Channel.WHATSAPP if settings.WHATSAPP_ENABLED else Channel.SMS
+
+
+class ChannelChoiceMixin:
+    channel_fields = ("channel", "preferred_channel")
+
+    def __init__(self, *a, **kw):
+        super().__init__(*a, **kw)
+        for name in self.channel_fields:
+            if name in self.fields:
+                self.fields[name].choices = channel_choices()
+                if not settings.WHATSAPP_ENABLED:
+                    self.initial[name] = Channel.SMS
+
+
+class PhoneForm(ChannelChoiceMixin, forms.Form):
     phone = forms.CharField(label="Mobile number", max_length=20,
                             widget=forms.TextInput(attrs={"inputmode": "tel", "autocomplete": "tel",
                                                           "placeholder": "+501 600 1234"}))
@@ -22,7 +44,7 @@ class EmailForm(forms.Form):
     email = forms.EmailField(label="Email address")
 
 
-class ProfileForm(forms.Form):
+class ProfileForm(ChannelChoiceMixin, forms.Form):
     full_name = forms.CharField(label="Your name", max_length=150)
     preferred_channel = forms.ChoiceField(label="Send reminders by", choices=Channel.choices,
                                           widget=forms.RadioSelect)

@@ -233,7 +233,7 @@ def checkout(request, hold_id):
             request.session["checkout_pending"] = {
                 "hold": str(appt.id), "phone": phone, "full_name": form.cleaned_data["full_name"],
                 "email": (form.cleaned_data.get("email") or "").lower(), "notes": notes,
-                "preferred_channel": form.cleaned_data["preferred_channel"],
+                "preferred_channel": otp.effective_channel(form.cleaned_data["preferred_channel"]),
                 "remember": form.cleaned_data.get("remember", True),
             }
             return redirect("customer:checkout", hold_id=appt.id)

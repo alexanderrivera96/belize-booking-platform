@@ -1,10 +1,11 @@
 from django import forms
 from django.conf import settings
 
+from accounts.forms import ChannelChoiceMixin
 from accounts.models import Channel
 
 
-class CheckoutForm(forms.Form):
+class CheckoutForm(ChannelChoiceMixin, forms.Form):
     full_name = forms.CharField(label="Your name", max_length=150)
     phone = forms.CharField(label="Mobile number", max_length=20,
                             widget=forms.TextInput(attrs={"inputmode": "tel", "autocomplete": "tel",

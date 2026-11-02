@@ -1,5 +1,24 @@
 """Security headers on every response (security plan: web application hardening)."""
 from django.conf import settings
+from django.http import HttpResponse
+
+
+class HealthCheckMiddleware:
+    """Load-balancer health checks arrive over plain HTTP with an internal Host header.
+    Answer them first so host validation and the HTTPS redirect don't fail the check."""
+
+    def __init__(self, get_response):
+        self.get_response = get_response
+
+    def __call__(self, request):
+        if request.path == "/healthz":
+            from django.db import connection
+            try:
+                connection.ensure_connection()
+            except Exception:
+                return HttpResponse("db unavailable", status=503, content_type="text/plain")
+            return HttpResponse("ok", content_type="text/plain")
+        return self.get_response(request)
 
 CSP = (
     "default-src 'self'; "

@@ -10,3 +10,4 @@ django-auditlog==3.4.1
 celery==5.6.3
 redis==8.1.0
 gunicorn==23.0.0
+whitenoise==6.12.0

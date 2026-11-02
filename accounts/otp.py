@@ -76,6 +76,10 @@ class ConsoleBackend:
         return f"otp:{purpose}:{target.lower()}"
 
     def start(self, target, channel, purpose):
+        if not settings.DEBUG:
+            # Production without Twilio: never pretend a code was sent (nobody could receive it).
+            log.error("OTP_BACKEND=console in production — set up Twilio Verify to enable sign-in")
+            raise OtpError("Sign-in codes aren't switched on yet. Please try again soon.")
         code = f"{secrets.randbelow(1_000_000):06d}"
         digest = hashlib.sha256(code.encode()).hexdigest()
         cache.set(self._key(target, purpose), {"h": digest, "n": 0}, CODE_TTL)
@@ -132,8 +136,14 @@ def backend():
 
 # ---------------------------------------------------------------- public API
 
+def effective_channel(channel: str) -> str:
+    """WhatsApp only once an approved WhatsApp sender is configured; otherwise SMS."""
+    return "whatsapp" if channel == "whatsapp" and settings.WHATSAPP_ENABLED else "sms"
+
+
 def start_phone_code(phone_raw, *, channel="whatsapp", purpose=OtpRequest.Purpose.LOGIN, ip=None, user=None):
     phone = normalise_phone(phone_raw)
+    channel = effective_channel(channel)
     _check_rate_limits(phone=phone, ip=ip)
     sid = backend().start(phone, channel if channel in ("whatsapp", "sms") else "sms", purpose)
     OtpRequest.objects.create(phone=phone, channel=channel, purpose=purpose, ip=ip, user=user, provider_sid=sid)
