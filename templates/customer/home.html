@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="hero">
+  <div class="wrap">
+    <h1>Book your next cut, braids or nails — in under a minute.</h1>
+    <p class="lead">Find barbers, stylists, nail and lash techs, massage and dental services across Belize. Pick a time, get a WhatsApp reminder, done.</p>
+    {% include "customer/_searchbar.html" %}
+    <div class="chips" style="margin-top:1rem">
+      {% for c in categories %}<a class="chip" href="/search/?category={{ c.slug }}">{{ c.name }}</a>{% endfor %}
+    </div>
+  </div>
+</section>
+<section class="wrap">
+  <h2 class="section-title">Popular on {{ PLATFORM_NAME }}</h2>
+  {% if featured %}
+  <div class="grid grid-2">{% for biz in featured %}{% include "customer/_biz_card.html" %}{% endfor %}</div>
+  {% else %}<div class="card empty">Businesses are joining now — check back soon.</div>{% endif %}
+  <h2 class="section-title">Browse by town</h2>
+  <div class="chips">{% for t in towns %}<a class="chip" href="/search/?town={{ t.slug }}">{{ t.name }}</a>{% endfor %}</div>
+  <div class="card card-flat" style="margin-top:2.5rem">
+    <div class="spread">
+      <div><h2>Run a shop or studio?</h2><p class="muted" style="margin:0">Free 30-day pilot. Online bookings, a calendar for your team and automatic WhatsApp reminders.</p></div>
+      <a class="btn" href="/for-business/">List your business</a>
+    </div>
+  </div>
+</section>
+{% endblock %}

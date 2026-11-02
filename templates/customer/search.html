@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}Explore · {{ PLATFORM_NAME }}{% endblock %}
+{% block content %}
+<div class="wrap" style="padding-top:1.5rem">
+  <h1>Explore</h1>
+  {% include "customer/_searchbar.html" %}
+  <form method="get" class="row" style="margin-top:.8rem">
+    <input type="hidden" name="category" value="{{ cat }}"><input type="hidden" name="town" value="{{ town }}">
+    <label class="sr-only" for="q">Search by name or service</label>
+    <input id="q" type="search" name="q" value="{{ q }}" placeholder="Search a name or service, e.g. “fade”" style="max-width:420px">
+  </form>
+  <p class="muted" style="margin-top:1rem">{{ results|length }} result{{ results|length|pluralize }}</p>
+  {% if results %}
+  <div class="grid grid-2">{% for biz in results %}{% include "customer/_biz_card.html" %}{% endfor %}</div>
+  {% else %}
+  <div class="card empty">No businesses match yet. Try another town or service.</div>
+  {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block title %}My bookings · {{ PLATFORM_NAME }}{% endblock %}
+{% block content %}
+<div class="wrap" style="padding-top:1.5rem;max-width:820px">
+  <h1>My bookings</h1>
+  <section class="card"><h2>Upcoming</h2>
+    {% if upcoming %}<ul class="list">{% for a in upcoming %}{% include "customer/_appt_row.html" %}{% endfor %}</ul>
+    {% else %}<div class="empty">Nothing booked. <a href="/search/">Find a place</a>.</div>{% endif %}
+  </section>
+  {% if past %}<section class="card card-flat" style="margin-top:1rem"><h2>Past and cancelled</h2>
+    <ul class="list">{% for a in past %}{% include "customer/_appt_row.html" %}{% endfor %}</ul></section>{% endif %}
+</div>
+{% endblock %}

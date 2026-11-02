@@ -1,0 +1,28 @@
+{% extends "base.html" %}{% load ui %}
+{% block title %}Your booking · {{ b.name }}{% endblock %}
+{% block content %}
+<div class="narrow" style="padding-top:2rem">
+  <span class="badge {{ appt.status|status_badge }}">{{ appt.get_status_display }}</span>
+  <h1>{{ appt.service.name }}</h1>
+  <div class="summary">
+    <dl>
+      <dt>When</dt><dd>{{ start_local|date:"l j F Y" }}, {{ start_local|time:"g:i A" }}</dd>
+      <dt>With</dt><dd>{{ appt.staff.display_name }}</dd>
+      <dt>Where</dt><dd><a href="/b/{{ b.slug }}/">{{ b.name }}</a><br><small class="muted">{{ b.address }}</small></dd>
+      <dt>Price</dt><dd>{{ appt.price_cents|bzd }}</dd>
+      {% if appt.customer_notes %}<dt>Your note</dt><dd>{{ appt.customer_notes }}</dd>{% endif %}
+      {% if appt.cancel_reason and appt.status == "cancelled_by_provider" %}<dt>Reason</dt><dd>{{ appt.cancel_reason }}</dd>{% endif %}
+    </dl>
+  </div>
+  {% if can_change %}
+    {% if late %}<p class="devnote" style="margin-top:1rem">This is within {{ b.name }}'s {{ window }}-hour cancellation window. You can still change it, but the business will see it as a late change.</p>{% endif %}
+    <div class="row" style="margin-top:1rem">
+      <a class="btn" href="{{ base }}reschedule/">Reschedule</a>
+      <form method="post" action="{{ base }}cancel/" data-confirm="Cancel this appointment?">{% csrf_token %}<button class="btn btn-danger" type="submit">Cancel appointment</button></form>
+    </div>
+  {% elif appt.status == "cancelled_by_client" or appt.status == "cancelled_by_provider" or appt.status == "declined" or appt.status == "expired" %}
+    <a class="btn" style="margin-top:1rem" href="/b/{{ b.slug }}/">Book again</a>
+  {% endif %}
+  {% if b.phone %}<p class="muted" style="margin-top:1.5rem">Questions? Call {{ b.name }} on {{ b.phone }}.</p>{% endif %}
+</div>
+{% endblock %}

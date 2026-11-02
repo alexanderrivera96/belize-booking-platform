@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}Reschedule · {{ b.name }}{% endblock %}
+{% block content %}
+<div class="wrap" style="padding-top:1.5rem;max-width:820px">
+  <a href="{{ base }}" class="muted">← Back to booking</a>
+  <h1>Pick a new time</h1>
+  <p class="muted">{{ appt.service.name }} with {{ appt.staff.display_name }} — currently {{ start_local|date:"D j M" }}, {{ start_local|time:"g:i A" }}.</p>
+  <div class="card">
+    <nav class="days" aria-label="Days">{% for d in days %}<a class="day{% if d.on %} on{% endif %}{% if not d.open %} closed{% endif %}" href="?date={{ d.date|date:'Y-m-d' }}"><small>{{ d.date|date:"D" }}</small><strong>{{ d.date|date:"j" }}</strong><small>{{ d.date|date:"M" }}</small></a>{% endfor %}</nav>
+    <h2 style="margin-top:1.2rem">{{ day|date:"l j F" }}</h2>
+    {% if slots %}<form method="post" class="slots">{% csrf_token %}{% for st in slots %}<button type="submit" name="starts_at" value="{{ st.isoformat }}">{{ st|time:"g:i A" }}</button>{% endfor %}</form>
+    {% else %}<div class="empty">No times on this day.</div>{% endif %}
+  </div>
+</div>
+{% endblock %}

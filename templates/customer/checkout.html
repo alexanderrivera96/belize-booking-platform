@@ -1,0 +1,48 @@
+{% extends "base.html" %}{% load ui %}
+{% block title %}Confirm your booking · {{ b.name }}{% endblock %}
+{% block content %}
+<div class="wrap" style="padding-top:1.5rem">
+  <div class="steps"><span>1 Service</span>›<span>2 Time</span>›<span class="on">3 Your details</span></div>
+  <div class="grid book-layout">
+    <section class="card">
+      {% if stage == "code" %}
+        <h2>Enter the code we sent</h2>
+        <p class="muted">Sent to <strong>{{ pending.phone }}</strong> by {% if pending.preferred_channel == "sms" %}SMS{% else %}WhatsApp{% endif %}. This confirms your number and books your time.</p>
+        {% include "includes/devcode.html" %}
+        {% if error %}<ul class="messages"><li class="error">{{ error }}</li></ul>{% endif %}
+        <form method="post">{% csrf_token %}<input type="hidden" name="action" value="verify"><input type="hidden" name="idem" value="{{ idem }}">
+          <div class="field"><label for="code">6-digit code</label><input id="code" name="code" class="code-input" inputmode="numeric" autocomplete="one-time-code" required autofocus></div>
+          <button class="btn btn-block btn-accent" type="submit">Confirm booking</button>
+        </form>
+        <form method="post" style="margin-top:.6rem">{% csrf_token %}<input type="hidden" name="action" value="back"><button class="btn btn-ghost btn-sm" type="submit">Change my details</button></form>
+      {% elif user.is_authenticated %}
+        <h2>Confirm your booking</h2>
+        <p>Booking as <strong>{{ user.full_name|default:user.phone }}</strong> ({{ user.phone }}). Reminders by {{ user.get_preferred_channel_display }}.</p>
+        <form method="post">{% csrf_token %}<input type="hidden" name="idem" value="{{ idem }}">
+          {% include "includes/form.html" %}
+          <button class="btn btn-block btn-accent" type="submit">Confirm booking</button>
+        </form>
+      {% else %}
+        <h2>Your details</h2>
+        <p class="muted">No account or password needed — we'll text you a code to confirm. Already booked with us? <a href="/login/?next={{ request.path }}">Sign in</a>.</p>
+        <form method="post">{% csrf_token %}
+          {% include "includes/form.html" %}
+          <button class="btn btn-block" type="submit">Send my code</button>
+        </form>
+      {% endif %}
+    </section>
+    <aside class="summary">
+      <h3>{{ appt.service.name }}</h3>
+      <dl>
+        <dt>When</dt><dd>{{ start_local|date:"D j M" }}, {{ start_local|time:"g:i A" }}</dd>
+        <dt>With</dt><dd>{{ appt.staff.display_name }}</dd>
+        <dt>Where</dt><dd>{{ b.name }}<br><small class="muted">{{ b.address }}</small></dd>
+        <dt>Price</dt><dd>{{ appt.price_cents|bzd }}</dd>
+      </dl>
+      <p style="margin:.9rem 0 0">Held for you for <span class="timer" data-expires="{{ appt.hold_expires_at.isoformat }}">10:00</span></p>
+      <p class="muted" data-expired-note hidden>Your hold has ended — you can still try to confirm; if someone else took the time we'll show you new ones.</p>
+      <form method="post" action="/checkout/{{ appt.id }}/cancel/" style="margin-top:.6rem">{% csrf_token %}<button class="btn btn-ghost btn-sm" type="submit">Choose a different time</button></form>
+    </aside>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,39 @@
+{% extends "base.html" %}{% load ui %}
+{% block title %}{{ b.name }} · {{ b.town.name }} · {{ PLATFORM_NAME }}{% endblock %}
+{% block description %}{{ b.tagline|default:b.name }} — book online at {{ b.name }} in {{ b.town.name }}.{% endblock %}
+{% block content %}
+<div class="wrap">
+  <div class="biz-head">
+    <span class="avatar avatar-lg">{{ b.initials }}</span>
+    <div>
+      <h1 style="margin:0">{{ b.name }}</h1>
+      <div class="muted">{{ b.category.name }} · {{ b.town.name }}{% if b.address %} · {{ b.address }}{% endif %}</div>
+      {% if b.booking_policy.requires_approval %}<span class="badge badge-warn">Bookings confirmed by the business</span>{% else %}<span class="badge badge-ok">Instant booking</span>{% endif %}
+    </div>
+  </div>
+  <div class="grid biz-layout">
+    <section class="card">
+      <h2>Services</h2>
+      <ul class="list">
+        {% for s in services %}
+        <li class="svc">
+          <span class="info"><strong>{{ s.name }}</strong><small>{{ s.duration_min|duration }}{% if s.description %} · {{ s.description }}{% endif %}</small></span>
+          <span class="row"><span class="price">{{ s.price_cents|bzd }}</span>
+            <a class="btn btn-sm" href="/b/{{ b.slug }}/book/?service={{ s.id }}">Book</a></span>
+        </li>
+        {% empty %}<li class="muted">No services listed yet.</li>{% endfor %}
+      </ul>
+    </section>
+    <aside class="stack">
+      {% if b.description %}<div class="card card-flat"><h3>About</h3><p style="margin:0">{{ b.description|linebreaksbr }}</p></div>{% endif %}
+      <div class="card card-flat"><h3>Team</h3>
+        <ul class="list">{% for st in staff %}<li class="row"><span class="avatar avatar-round">{{ st.initials }}</span><span><strong>{{ st.display_name }}</strong><br><small>{{ st.title }}</small></span></li>{% endfor %}</ul>
+      </div>
+      <div class="card card-flat"><h3>Opening hours</h3>
+        <dl class="dl">{% for name, ranges in hours %}<dt>{{ name }}</dt><dd>{% for s, e in ranges %}{{ s|time:"g:i A" }} – {{ e|time:"g:i A" }}{% if not forloop.last %}, {% endif %}{% empty %}<span class="muted">Closed</span>{% endfor %}</dd>{% endfor %}</dl>
+      </div>
+      <div class="card card-flat"><h3>Cancellation</h3><p class="muted" style="margin:0">Please cancel or reschedule at least {{ b.booking_policy.cancel_window_hours }} hours before your appointment.</p></div>
+    </aside>
+  </div>
+</div>
+{% endblock %}

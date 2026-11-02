@@ -1,0 +1,28 @@
+{% extends "base.html" %}{% load ui %}
+{% block title %}You're booked · {{ b.name }}{% endblock %}
+{% block content %}
+<div class="narrow" style="padding-top:2.5rem">
+  {% if appt.status == "pending_approval" %}
+    <span class="badge badge-warn">Request sent</span>
+    <h1>{{ b.name }} will confirm shortly</h1>
+    <p class="muted">We'll message you as soon as they approve. If they don't respond within the hour, the time is released and we'll let you know.</p>
+  {% else %}
+    <span class="badge badge-ok">Confirmed</span>
+    <h1>You're booked!</h1>
+    <p class="muted">We've sent the details by {{ user.get_preferred_channel_display }} and will remind you before your appointment.</p>
+  {% endif %}
+  <div class="summary" style="margin:1.2rem 0">
+    <dl>
+      <dt>What</dt><dd>{{ appt.service.name }}</dd>
+      <dt>When</dt><dd>{{ start_local|date:"l j F" }}, {{ start_local|time:"g:i A" }}</dd>
+      <dt>With</dt><dd>{{ appt.staff.display_name }}</dd>
+      <dt>Where</dt><dd>{{ b.name }} · {{ b.address }}</dd>
+      <dt>Price</dt><dd>{{ appt.price_cents|bzd }}{% if not PAYMENTS_ENABLED %} <small class="muted">(pay at your visit)</small>{% endif %}</dd>
+    </dl>
+  </div>
+  {% if not user.email and user.email_prompt_count < 2 %}
+  <div class="card card-flat"><strong>Add your email</strong><p class="muted" style="margin:.2rem 0 .6rem">For receipts, and to get back into your account if you change your number.</p><a class="btn btn-secondary btn-sm" href="/account/">Add email</a></div>
+  {% endif %}
+  <div class="row" style="margin-top:1.2rem"><a class="btn" href="/me/">My bookings</a><a class="btn btn-secondary" href="/b/{{ b.slug }}/">Back to {{ b.name }}</a></div>
+</div>
+{% endblock %}

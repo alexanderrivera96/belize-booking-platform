@@ -1,0 +1,9 @@
+<form class="searchbar" method="get" action="/search/" role="search">
+  <label class="sr-only" for="s-cat">Service type</label>
+  <select id="s-cat" name="category"><option value="">All services</option>
+    {% for c in categories %}<option value="{{ c.slug }}"{% if c.slug == cat %} selected{% endif %}>{{ c.name }}</option>{% endfor %}</select>
+  <label class="sr-only" for="s-town">Town</label>
+  <select id="s-town" name="town"><option value="">Anywhere in Belize</option>
+    {% for t in towns %}<option value="{{ t.slug }}"{% if t.slug == town %} selected{% endif %}>{{ t.name }}</option>{% endfor %}</select>
+  <button class="btn btn-accent" type="submit">Search</button>
+</form>

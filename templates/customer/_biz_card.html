@@ -1,0 +1,9 @@
+{% load ui %}<a class="card biz-card" href="/b/{{ biz.slug }}/">
+  <span class="avatar avatar-lg">{{ biz.initials }}</span>
+  <span>
+    <strong>{{ biz.name }}</strong><br>
+    <span class="meta">{{ biz.category.name }} · {{ biz.town.name }}</span><br>
+    {% if biz.tagline %}<span class="meta">{{ biz.tagline }}</span><br>{% endif %}
+    {% if biz.min_price %}<span class="badge badge-primary">From {{ biz.min_price|bzd }}</span>{% endif %}
+  </span>
+</a>

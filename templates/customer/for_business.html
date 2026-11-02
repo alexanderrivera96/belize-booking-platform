@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}For business · {{ PLATFORM_NAME }}{% endblock %}
+{% block content %}
+<div class="wrap" style="padding-top:2rem;max-width:860px">
+  <h1>Take bookings while you work.</h1>
+  <p class="lead muted">{{ PLATFORM_NAME }} gives barbers, salons, nail and lash techs, massage therapists and dental offices in Belize a booking page, a team calendar, and automatic WhatsApp or SMS reminders that cut no-shows.</p>
+  <div class="grid grid-3" style="margin:1.5rem 0">
+    <div class="card card-flat"><h3>Your own booking link</h3><p class="muted">Share it on WhatsApp, Instagram and Facebook. Clients pick a time that's really free.</p></div>
+    <div class="card card-flat"><h3>One calendar for the team</h3><p class="muted">Everyone's day at a glance. Add walk-ins and phone bookings in seconds.</p></div>
+    <div class="card card-flat"><h3>Reminders that go out on their own</h3><p class="muted">24 hours and 2 hours before, by WhatsApp or SMS, with a link to reschedule.</p></div>
+  </div>
+  <div class="card"><h2>Join the free 30-day pilot</h2><p>We set up your page with you — services, prices, team and hours. Contact the {{ PLATFORM_NAME }} team and we'll get you listed.</p>
+  <p class="muted" style="margin:0">Already set up? <a href="/login/?next=/provider/">Sign in to your dashboard</a>.</p></div>
+</div>
+{% endblock %}

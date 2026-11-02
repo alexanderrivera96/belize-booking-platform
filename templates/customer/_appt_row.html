@@ -1,0 +1,6 @@
+{% load ui tz %}<li class="spread">
+  <span class="row"><span class="avatar">{{ a.business.initials }}</span>
+    <span><strong>{{ a.service.name }}</strong> · {{ a.business.name }}<br>
+    <small>{% timezone a.business.timezone %}{{ a.starts_at|date:"D j M Y" }}, {{ a.starts_at|time:"g:i A" }}{% endtimezone %} with {{ a.staff.display_name }}</small></span></span>
+  <span class="row"><span class="badge {{ a.status|status_badge }}">{{ a.get_status_display }}</span><a class="btn btn-secondary btn-sm" href="/me/a/{{ a.id }}/">View</a></span>
+</li>

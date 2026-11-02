@@ -1,0 +1,9 @@
+<h2>{{ day|date:"l j F" }} <small class="muted">· {{ tzname }}</small></h2>
+{% if slots %}
+<form method="post" action="/b/{{ b.slug }}/hold/" class="slots">{% csrf_token %}
+  <input type="hidden" name="service" value="{{ service.id }}"><input type="hidden" name="staff" value="{{ staff_id }}">
+  {% for st, ids in slots %}<button type="submit" name="starts_at" value="{{ st.isoformat }}">{{ st|time:"g:i A" }}</button>{% endfor %}
+</form>
+{% else %}
+<div class="empty">No times left on this day. Try another day{% if staff %} or “Anyone available”{% endif %}.</div>
+{% endif %}

@@ -1,0 +1,31 @@
+{% extends "base.html" %}{% load ui %}
+{% block title %}Book {{ service.name }} · {{ b.name }}{% endblock %}
+{% block content %}
+<div class="wrap" style="padding-top:1.5rem">
+  <a href="/b/{{ b.slug }}/" class="muted">← {{ b.name }}</a>
+  <div class="steps"><span>1 Service</span>›<span class="on">2 Time</span>›<span>3 Your details</span></div>
+  <div class="grid book-layout">
+    <section class="card">
+      <h2>Who would you like?</h2>
+      <div class="chips" style="margin-bottom:1.2rem">
+        <a class="chip{% if staff_id == 'any' or not staff %} on{% endif %}" href="?service={{ service.id }}&staff=any&date={{ day|date:'Y-m-d' }}">Anyone available</a>
+        {% for c in candidates %}<a class="chip{% if staff and staff.id == c.id %} on{% endif %}" href="?service={{ service.id }}&staff={{ c.id }}&date={{ day|date:'Y-m-d' }}">{{ c.display_name }}</a>{% endfor %}
+      </div>
+      <h2>Pick a day</h2>
+      <nav class="days" aria-label="Days">
+        {% for d in days %}
+        <a class="day{% if d.on %} on{% endif %}{% if not d.open %} closed{% endif %}" href="?service={{ service.id }}&staff={{ staff_id }}&date={{ d.date|date:'Y-m-d' }}">
+          <small>{{ d.date|date:"D" }}</small><strong>{{ d.date|date:"j" }}</strong><small>{{ d.date|date:"M" }}</small></a>
+        {% endfor %}
+      </nav>
+      <div id="slots" style="margin-top:1.2rem">{% include "customer/_slots.html" %}</div>
+    </section>
+    <aside class="summary">
+      <h3>{{ service.name }}</h3>
+      <dl><dt>Length</dt><dd>{{ service.duration_min|duration }}</dd><dt>Price</dt><dd>{{ service.price_cents|bzd }}</dd><dt>Where</dt><dd>{{ b.name }}, {{ b.town.name }}</dd></dl>
+      {% if b.booking_policy.requires_approval %}<p class="muted" style="margin:.8rem 0 0">{{ b.name }} confirms each request, usually within the hour.</p>{% endif %}
+      {% if not PAYMENTS_ENABLED %}<p class="muted" style="margin:.8rem 0 0">Pay at your visit.</p>{% endif %}
+    </aside>
+  </div>
+</div>
+{% endblock %}
