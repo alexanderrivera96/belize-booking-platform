@@ -607,3 +607,18 @@ def settings_view(request, business_id):
     return render(request, "provider/settings.html", ctx(
         request, "settings", pform=pform, polform=polform,
         booking_link=f"{settings.PUBLIC_BASE_URL.rstrip('/')}/b/{b.slug}/"))
+
+
+# ---------------------------------------------------------------- calendar feed (iCal)
+
+@business_view(Cap.VIEW_OWN_CALENDAR)
+@require_POST
+def calendar_feed(request, business_id, staff_id):
+    st = get_object_or_404(Staff, business=request.business, id=staff_id)
+    if not (can(request, Cap.MANAGE_STAFF) or (request.staff and request.staff.id == st.id)):
+        raise Http404()
+    raw = st.rotate_feed_token()
+    url = f"{settings.PUBLIC_BASE_URL.rstrip('/')}/feeds/{raw}.ics"
+    return render(request, "provider/feed_link.html", ctx(request, "calendar", st=st, url=url,
+                                                           webcal=url.replace("https://", "webcal://")
+                                                           .replace("http://", "webcal://")))

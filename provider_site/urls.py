@@ -11,6 +11,7 @@ urlpatterns = [
     path("invites/<uuid:member_id>/accept/", views.accept_invite, name="accept_invite"),
     path(B, views.dashboard, name="dashboard"),
     path(B + "calendar/", views.calendar, name="calendar"),
+    path(B + "calendar/feed/<uuid:staff_id>/", views.calendar_feed, name="calendar_feed"),
     path(B + "appointments/", views.appointments, name="appointments"),
     path(B + "appointments/new/", views.new_booking, name="new_booking"),
     path(B + "a/<uuid:appt_id>/", views.appointment_detail, name="appointment"),

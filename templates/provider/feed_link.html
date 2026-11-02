@@ -1,0 +1,13 @@
+{% extends "provider/base.html" %}
+{% block title %}Calendar link{% endblock %}
+{% block content %}
+<div class="page-head"><h1>Private calendar link for {{ st.display_name }}</h1></div>
+<div class="card" style="max-width:720px">
+  <p>Add this link to Google Calendar, Apple Calendar or Outlook as a <strong>subscribed calendar</strong>. Bookings appear there automatically (calendar apps refresh every few hours). Copy it now — for privacy it isn't shown again; make a new one any time.</p>
+  <div class="row"><input readonly value="{{ url }}" aria-label="Calendar link"><button class="btn btn-sm" type="button" data-copy="{{ url }}">Copy</button></div>
+  <p style="margin-top:1rem"><a class="btn btn-secondary btn-sm" href="{{ webcal }}">Open in my calendar app</a></p>
+  <p class="muted">Events show the service only, never client names or numbers. Anyone with the link can see your booked times, so don't share it.</p>
+  <ul class="muted"><li><strong>Google Calendar:</strong> Other calendars → + → From URL.</li><li><strong>iPhone:</strong> Settings → Calendar → Accounts → Add Subscribed Calendar.</li><li><strong>Outlook:</strong> Add calendar → Subscribe from web.</li></ul>
+  <a href="/provider/{{ b.id }}/calendar/">← Back to calendar</a>
+</div>
+{% endblock %}

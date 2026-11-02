@@ -163,6 +163,8 @@ class Staff(models.Model):
     bookable_online = models.BooleanField(default=True)
     services = models.ManyToManyField(Service, through="StaffService", related_name="staff")
     sort_order = models.PositiveSmallIntegerField(default=0)
+    feed_token_hash = models.CharField(max_length=64, blank=True, db_index=True, editable=False,
+                                       help_text="SHA-256 of the private calendar-feed token.")
 
     class Meta:
         ordering = ["sort_order", "display_name"]
@@ -178,6 +180,15 @@ class Staff(models.Model):
     @property
     def initials(self):
         return "".join(w[0] for w in self.display_name.split()[:2]).upper()
+
+    def rotate_feed_token(self) -> str:
+        """New private iCal link; the old one stops working. Only the hash is stored."""
+        import hashlib
+        import secrets
+        raw = secrets.token_urlsafe(32)
+        self.feed_token_hash = hashlib.sha256(raw.encode()).hexdigest()
+        self.save(update_fields=["feed_token_hash"])
+        return raw
 
 
 class StaffService(models.Model):

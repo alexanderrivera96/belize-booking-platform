@@ -21,6 +21,7 @@
 <div id="cal" hx-get="{{ request.get_full_path }}" hx-trigger="every 30s" hx-swap="innerHTML" data-scroll-to="{{ scroll_to }}">
   {% include "provider/_calendar_grid.html" %}
 </div>
+{% if user.memberships.exists and m.staff_profile %}<form method="post" action="/provider/{{ b.id }}/calendar/feed/{{ m.staff_profile.id }}/" style="margin-top:1rem" data-confirm="Create a new private calendar link? Any old link stops working.">{% csrf_token %}<button class="btn btn-secondary btn-sm" type="submit">📅 Show my bookings in my phone's calendar</button></form>{% endif %}
 <div class="legend"><span><i style="background:var(--primary-soft);border-left:3px solid var(--primary)"></i>Confirmed</span><span><i style="background:var(--warn-soft)"></i>Awaiting approval</span><span><i style="background:var(--danger-soft)"></i>No-show</span><span><i style="background:var(--surface-2)"></i>Time off</span><span>Striped = outside working hours · updates every 30 seconds</span></div>
 {% endif %}
 {% endblock %}

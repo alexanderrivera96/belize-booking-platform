@@ -6,7 +6,7 @@
   <h2>Bookable people</h2>
   <ul class="list">{% for s in staff %}
     <li class="spread"><span class="row"><span class="avatar avatar-round">{{ s.initials }}</span><span><strong>{{ s.display_name }}</strong> {% if not s.active %}<span class="badge">Inactive</span>{% elif not s.bookable_online %}<span class="badge badge-warn">Not online</span>{% endif %}<br><small>{{ s.title|default:"" }}{% if s.title %} · {% endif %}{{ s.services.all|length }} service{{ s.services.all|length|pluralize }}{% if s.member %} · login: {{ s.member.user.phone }}{% else %} · no login{% endif %}</small></span></span>
-    <span class="row"><a class="btn btn-secondary btn-sm" href="/provider/{{ b.id }}/hours/?staff={{ s.id }}">Hours</a><a class="btn btn-secondary btn-sm" href="/provider/{{ b.id }}/team/{{ s.id }}/">Edit</a></span></li>
+    <span class="row"><form method="post" action="/provider/{{ b.id }}/calendar/feed/{{ s.id }}/" data-confirm="Create a new private calendar link for {{ s.display_name }}? Any old link stops working.">{% csrf_token %}<button class="btn btn-ghost btn-sm" type="submit">Calendar link</button></form><a class="btn btn-secondary btn-sm" href="/provider/{{ b.id }}/hours/?staff={{ s.id }}">Hours</a><a class="btn btn-secondary btn-sm" href="/provider/{{ b.id }}/team/{{ s.id }}/">Edit</a></span></li>
   {% empty %}<li class="empty">Add the people clients can book.</li>{% endfor %}</ul>
 </section>
 <div class="grid grid-2" style="margin-top:1rem;align-items:start">
