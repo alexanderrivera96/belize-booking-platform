@@ -1,0 +1,12 @@
+Django>=5.2.18,<5.3
+djangorestframework==3.18.3
+psycopg[binary]==3.3.6
+dj-database-url==3.1.2
+django-phonenumber-field==9.0.0
+phonenumbers==9.0.42
+django-otp==1.7.5
+qrcode==8.2
+django-auditlog==3.4.1
+celery==5.6.3
+redis==8.1.0
+gunicorn==23.0.0

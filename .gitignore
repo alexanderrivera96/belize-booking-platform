@@ -1,0 +1,13 @@
+__pycache__/
+*.py[cod]
+.env
+.venv/
+venv/
+staticfiles/
+media/
+*.sqlite3
+.coverage
+htmlcov/
+.pytest_cache/
+.DS_Store
+celerybeat-schedule*
