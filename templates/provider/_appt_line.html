@@ -1,0 +1,7 @@
+{% load ui %}<li class="spread">
+  <a class="row" style="text-decoration:none;color:inherit" href="/provider/{{ b.id }}/a/{{ a.id }}/">
+    <span class="avatar avatar-round">{{ a.customer.name|initials }}</span>
+    <span><strong>{{ a.starts_at|time:"g:i A" }}</strong> · {{ a.customer.name }}<br><small>{{ a.service.name }} · {{ a.staff.display_name }} · {{ a.duration_min|duration }}{% if a.source != "online" %} · {{ a.get_source_display }}{% endif %}</small></span>
+  </a>
+  <span class="badge {{ a.status|status_badge }}">{{ a.get_status_display }}</span>
+</li>

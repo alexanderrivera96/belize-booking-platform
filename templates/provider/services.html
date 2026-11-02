@@ -1,0 +1,10 @@
+{% extends "provider/base.html" %}{% load ui %}
+{% block title %}Services{% endblock %}
+{% block content %}
+<div class="page-head"><h1>Services</h1><a class="btn" href="/provider/{{ b.id }}/services/new/">+ Add service</a></div>
+{% if rows %}
+<div class="table-wrap"><table class="table"><thead><tr><th>Service</th><th>Length</th><th>Price</th><th>Team</th><th>Status</th><th></th></tr></thead><tbody>
+{% for s in rows %}<tr><td><strong>{{ s.name }}</strong>{% if s.description %}<br><small class="muted">{{ s.description }}</small>{% endif %}</td><td>{{ s.duration_min|duration }}{% if s.buffer_before_min or s.buffer_after_min %}<br><small class="muted">+{{ s.buffer_before_min }}/{{ s.buffer_after_min }} min prep/clean-up</small>{% endif %}</td><td class="price">{{ s.price_cents|bzd }}</td><td>{{ s.staff_count }}</td><td>{% if s.active %}<span class="badge badge-ok">Bookable</span>{% else %}<span class="badge">Hidden</span>{% endif %}</td><td><a class="btn btn-secondary btn-sm" href="/provider/{{ b.id }}/services/{{ s.id }}/">Edit</a></td></tr>{% endfor %}
+</tbody></table></div>
+{% else %}<div class="card empty">Add the services clients can book — name, length and price.</div>{% endif %}
+{% endblock %}

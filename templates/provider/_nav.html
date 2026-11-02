@@ -1,0 +1,10 @@
+<a class="{{ cls }}{% if section == 'dashboard' %} on{% endif %}" href="/provider/{{ b.id }}/">Today{% if counts.pending %}<span class="nav-count">{{ counts.pending }}</span>{% endif %}</a>
+<a class="{{ cls }}{% if section == 'calendar' %} on{% endif %}" href="/provider/{{ b.id }}/calendar/">Calendar</a>
+<a class="{{ cls }}{% if section == 'appointments' %} on{% endif %}" href="/provider/{{ b.id }}/appointments/">Appointments</a>
+{% if caps.CREATE_BOOKING_FOR_SELF %}<a class="{{ cls }}{% if section == 'new' %} on{% endif %}" href="/provider/{{ b.id }}/appointments/new/">+ New booking</a>{% endif %}
+{% if caps.VIEW_CLIENTS %}<a class="{{ cls }}{% if section == 'clients' %} on{% endif %}" href="/provider/{{ b.id }}/clients/">Clients</a>{% endif %}
+{% if caps.BLOCK_OWN_TIME %}<a class="{{ cls }}{% if section == 'time_off' %} on{% endif %}" href="/provider/{{ b.id }}/time-off/">Time off</a>{% endif %}
+{% if caps.MANAGE_SERVICES %}<a class="{{ cls }}{% if section == 'services' %} on{% endif %}" href="/provider/{{ b.id }}/services/">Services</a>{% endif %}
+{% if caps.MANAGE_STAFF %}<a class="{{ cls }}{% if section == 'team' %} on{% endif %}" href="/provider/{{ b.id }}/team/">Team</a>{% endif %}
+{% if caps.MANAGE_HOURS_ALL %}<a class="{{ cls }}{% if section == 'hours' %} on{% endif %}" href="/provider/{{ b.id }}/hours/">Hours</a>{% endif %}
+{% if caps.MANAGE_PROFILE %}<a class="{{ cls }}{% if section == 'settings' %} on{% endif %}" href="/provider/{{ b.id }}/settings/">Settings</a>{% endif %}

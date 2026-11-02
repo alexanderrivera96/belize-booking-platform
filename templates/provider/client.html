@@ -1,0 +1,12 @@
+{% extends "provider/base.html" %}{% load ui %}
+{% block title %}{{ c.name }}{% endblock %}
+{% block content %}
+<a class="muted" href="/provider/{{ b.id }}/clients/">← Clients</a>
+<div class="page-head" style="margin-top:.5rem"><h1>{{ c.name }}</h1>{% if caps.CREATE_BOOKING_FOR_SELF %}<a class="btn" href="/provider/{{ b.id }}/appointments/new/">+ Book them in</a>{% endif %}</div>
+<div class="grid grid-2" style="align-items:start">
+  <section class="card"><dl class="dl"><dt>Phone</dt><dd>{{ c.phone|default:"—" }}</dd><dt>Email</dt><dd>{{ c.email|default:"—" }}</dd><dt>Client since</dt><dd>{{ c.created_at|date:"j M Y" }}</dd><dt>How they found you</dt><dd>{{ c.get_source_display }}</dd></dl>
+    {% if caps.EDIT_CLIENT_NOTES %}<hr><form method="post">{% csrf_token %}{% include "includes/form.html" %}<button class="btn btn-secondary btn-sm" type="submit">Save notes</button></form>{% elif c.notes %}<hr><p>{{ c.notes }}</p>{% endif %}
+  </section>
+  <section class="card"><h2>Visits</h2>{% if appts %}<ul class="list">{% for a in appts %}<li class="spread"><a href="/provider/{{ b.id }}/a/{{ a.id }}/">{{ a.starts_at|date:"j M Y, g:i A" }} · {{ a.service.name }}</a><span class="badge {{ a.status|status_badge }}">{{ a.get_status_display }}</span></li>{% endfor %}</ul>{% else %}<div class="empty">No visits you can see.</div>{% endif %}</section>
+</div>
+{% endblock %}

@@ -1,0 +1,41 @@
+{% extends "provider/base.html" %}{% load ui %}
+{% block title %}Today{% endblock %}
+{% block content %}
+<div class="page-head">
+  <div><h1>{{ today|date:"l j F" }}</h1><span class="muted">Good to see you, {{ user.full_name|default:"there" }}.</span></div>
+  <div class="row">{% if caps.CREATE_BOOKING_FOR_SELF %}<a class="btn" href="/provider/{{ b.id }}/appointments/new/">+ New booking</a>{% endif %}<a class="btn btn-secondary" href="/provider/{{ b.id }}/calendar/">Open calendar</a></div>
+</div>
+{% if b.status != "listed" %}<p class="devnote">Your page is <strong>{{ b.get_status_display|lower }}</strong> — clients can't book online yet. The {{ PLATFORM_NAME }} team lists it once setup is done.</p>{% endif %}
+{% if setup %}<div class="card" style="margin-bottom:1.2rem"><h2>Finish setting up</h2><ul class="list">{% for label, done, url in setup %}<li class="spread"><span>{{ label }}</span><a class="btn btn-sm btn-secondary" href="{% url url b.id %}">Go</a></li>{% endfor %}</ul></div>{% endif %}
+<div class="stats">
+  <div class="stat"><div class="label">Today</div><div class="value">{{ stats.today }}</div></div>
+  <div class="stat"><div class="label">Next 7 days</div><div class="value">{{ stats.week }}</div></div>
+  <div class="stat"><div class="label">Awaiting approval</div><div class="value">{{ stats.pending }}</div></div>
+  <div class="stat"><div class="label">Booked value today</div><div class="value">{{ stats.revenue_today|bzd|default:"BZ$0" }}</div></div>
+</div>
+<div class="grid grid-2" style="align-items:start">
+  <section class="card">
+    <h2>Today's appointments</h2>
+    {% if todays %}<ul class="list">{% for a in todays %}{% include "provider/_appt_line.html" %}{% endfor %}</ul>
+    {% else %}<div class="empty">Nothing booked today yet.</div>{% endif %}
+  </section>
+  <div class="stack">
+    {% if pending %}
+    <section class="card">
+      <h2>Requests to approve</h2>
+      <ul class="list">{% for a in pending %}
+        <li><div class="spread"><span><strong>{{ a.customer.name }}</strong> — {{ a.service.name }}<br><small>{{ a.starts_at|date:"D j M" }}, {{ a.starts_at|time:"g:i A" }} · {{ a.staff.display_name }} · expires {{ a.approval_expires_at|timeuntil }}</small></span></div>
+          <div class="row" style="margin-top:.5rem">
+            <form method="post" action="/provider/{{ b.id }}/a/{{ a.id }}/approve/">{% csrf_token %}<input type="hidden" name="next" value="/provider/{{ b.id }}/"><button class="btn btn-sm" type="submit">Approve</button></form>
+            <form method="post" action="/provider/{{ b.id }}/a/{{ a.id }}/decline/" data-confirm="Decline this request?">{% csrf_token %}<input type="hidden" name="next" value="/provider/{{ b.id }}/"><button class="btn btn-sm btn-danger" type="submit">Decline</button></form>
+          </div></li>{% endfor %}</ul>
+    </section>
+    {% endif %}
+    <section class="card card-flat">
+      <h2>Your booking link</h2>
+      <p class="muted">Share it on WhatsApp, Instagram or Facebook.</p>
+      <div class="row"><input type="text" readonly value="{{ booking_link }}" aria-label="Booking link"><button class="btn btn-secondary btn-sm" type="button" data-copy="{{ booking_link }}">Copy</button></div>
+    </section>
+  </div>
+</div>
+{% endblock %}

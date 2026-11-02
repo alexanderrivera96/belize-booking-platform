@@ -1,0 +1,10 @@
+{% extends "provider/base.html" %}
+{% block title %}New booking{% endblock %}
+{% block content %}
+<div class="page-head"><h1>New booking</h1></div>
+<form method="post" class="card" style="max-width:640px">{% csrf_token %}
+  <p class="muted">For walk-ins and phone calls. Confirmed straight away; the client gets a message and reminders if you add their mobile.</p>
+  {% include "includes/form.html" %}
+  <button class="btn" type="submit">Book it</button>
+</form>
+{% endblock %}

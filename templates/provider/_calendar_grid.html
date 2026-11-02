@@ -1,0 +1,17 @@
+<div class="cal">
+  <div class="cal-head" style="grid-template-columns:{{ grid_cols }}"><div></div>{% for c in columns %}<div>{{ c.label }}</div>{% endfor %}</div>
+  <div class="cal-body" style="grid-template-columns:{{ grid_cols }}">
+    <div class="cal-hours">{% for h in hours %}<div>{{ h|time:"g A" }}</div>{% endfor %}</div>
+    {% for c in columns %}
+    <div class="cal-col" style="height:{{ total_h }}px">
+      {% for h in hours %}<div class="hr"></div>{% endfor %}
+      {% for top, height in c.off %}<div class="off" style="top:{{ top }}px;height:{{ height }}px"></div>{% endfor %}
+      {% for e in c.events %}
+        {% if e.timeoff %}<div class="ev timeoff" style="top:{{ e.top }}px;height:{{ e.h }}px"><strong>Time off</strong>{{ e.timeoff.reason }}</div>
+        {% else %}<a class="ev {{ e.a.status }}" style="top:{{ e.top }}px;height:{{ e.h }}px" href="/provider/{{ b.id }}/a/{{ e.a.id }}/" title="{{ e.a.customer.name|default:'Checkout in progress' }} — {{ e.a.service.name }}"><strong>{{ e.local|time:"g:i" }} {% if e.a.customer %}{{ e.a.customer.name }}{% else %}Held{% endif %}</strong>{{ e.a.service.name }}</a>{% endif %}
+      {% endfor %}
+      {% if now_y is not None and c.day == today %}<div class="now-line" style="top:{{ now_y }}px"></div>{% endif %}
+    </div>
+    {% endfor %}
+  </div>
+</div>

@@ -1,0 +1,11 @@
+{% extends "provider/base.html" %}
+{% block title %}Clients{% endblock %}
+{% block content %}
+<div class="page-head"><h1>Clients</h1><span class="muted">{{ rows|length }} shown</span></div>
+<form class="toolbar" method="get"><input type="search" name="q" value="{{ q }}" placeholder="Search name, phone or email" aria-label="Search clients"></form>
+{% if rows %}
+<div class="table-wrap"><table class="table"><thead><tr><th>Name</th><th>Phone</th><th>Visits</th><th>No-shows</th><th>Last booking</th><th>Source</th></tr></thead><tbody>
+{% for c in rows %}<tr><td><a href="/provider/{{ b.id }}/clients/{{ c.id }}/">{{ c.name }}</a>{% if c.user_id %} <span class="badge badge-primary" title="Has a verified account">Verified</span>{% endif %}</td><td>{{ c.phone|default:"—" }}</td><td>{{ c.visits }}</td><td>{% if c.no_shows %}<span class="badge badge-danger">{{ c.no_shows }}</span>{% else %}0{% endif %}</td><td>{{ c.last_visit|date:"j M Y"|default:"—" }}</td><td>{{ c.get_source_display }}</td></tr>{% endfor %}
+</tbody></table></div>
+{% else %}<div class="card empty">No clients yet — they appear here when someone books.</div>{% endif %}
+{% endblock %}

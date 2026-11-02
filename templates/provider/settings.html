@@ -1,0 +1,21 @@
+{% extends "provider/base.html" %}
+{% block title %}Settings{% endblock %}
+{% block content %}
+<div class="page-head"><h1>Settings</h1></div>
+<div class="grid grid-2" style="align-items:start">
+  <form method="post" class="card">{% csrf_token %}<input type="hidden" name="form" value="profile">
+    <h2>Business profile</h2>{% with form=pform %}{% include "includes/form.html" %}{% endwith %}
+    <p class="muted">Category, town and listing status are managed by the {{ PLATFORM_NAME }} team.</p>
+    <button class="btn" type="submit">Save profile</button>
+  </form>
+  <div class="stack">
+    <form method="post" class="card">{% csrf_token %}<input type="hidden" name="form" value="policy">
+      <h2>Booking rules</h2>{% with form=polform %}{% include "includes/form.html" %}{% endwith %}
+      <p class="muted">Changing rules asks you to confirm with a code.</p>
+      <button class="btn" type="submit">Save rules</button>
+    </form>
+    <section class="card card-flat"><h2>Booking link</h2><div class="row"><input readonly value="{{ booking_link }}" aria-label="Booking link"><button class="btn btn-secondary btn-sm" type="button" data-copy="{{ booking_link }}">Copy</button></div></section>
+    <section class="card card-flat"><h2>Payments</h2><p class="muted" style="margin:0">Online deposits (card and DigiWallet) are coming once the bank agreements are in place. For now clients pay at the visit.</p></section>
+  </div>
+</div>
+{% endblock %}

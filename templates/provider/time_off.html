@@ -1,0 +1,13 @@
+{% extends "provider/base.html" %}
+{% block title %}Time off{% endblock %}
+{% block content %}
+<div class="page-head"><h1>Time off</h1></div>
+<div class="grid grid-2" style="align-items:start">
+  <form method="post" class="card">{% csrf_token %}<h2>Block time</h2><p class="muted">Holidays, appointments, personal time. Clients can't book these times.</p>{% include "includes/form.html" %}<button class="btn" type="submit">Block time</button></form>
+  <section class="card"><h2>Coming up</h2>
+    {% if rows %}<ul class="list">{% for t in rows %}<li class="spread"><span><strong>{{ t.staff.display_name }}</strong><br><small>{{ t.starts_at|date:"D j M, g:i A" }} → {{ t.ends_at|date:"D j M, g:i A" }}{% if t.reason %} · {{ t.reason }}{% endif %}</small></span>
+      <form method="post" action="/provider/{{ b.id }}/time-off/{{ t.id }}/delete/" data-confirm="Remove this time off?">{% csrf_token %}<button class="btn btn-ghost btn-sm" type="submit">Remove</button></form></li>{% endfor %}</ul>
+    {% else %}<div class="empty">Nothing blocked.</div>{% endif %}
+  </section>
+</div>
+{% endblock %}

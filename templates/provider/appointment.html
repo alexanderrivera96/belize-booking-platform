@@ -1,0 +1,54 @@
+{% extends "provider/base.html" %}{% load ui %}
+{% block title %}{{ appt.customer.name }} · {{ appt.service.name }}{% endblock %}
+{% block content %}
+<a class="muted" href="/provider/{{ b.id }}/calendar/?date={{ local|date:'Y-m-d' }}">← Calendar</a>
+<div class="page-head" style="margin-top:.5rem">
+  <div><h1>{{ appt.customer.name }}</h1><span class="badge {{ appt.status|status_badge }}">{{ appt.get_status_display }}</span>{% if appt.late_cancellation %} <span class="badge badge-accent">Late cancellation</span>{% endif %}{% if appt.allow_overlap %} <span class="badge">Overlap allowed</span>{% endif %}</div>
+</div>
+{% if clash %}<p class="devnote">This booking falls inside blocked time off. Move or cancel it.</p>{% endif %}
+<div class="grid grid-2" style="align-items:start">
+  <section class="card">
+    <dl class="dl">
+      <dt>Service</dt><dd>{{ appt.service.name }} · {{ appt.duration_min|duration }}</dd>
+      <dt>When</dt><dd>{{ local|date:"l j F Y" }}, {{ local|time:"g:i A" }}</dd>
+      <dt>With</dt><dd>{{ appt.staff.display_name }}</dd>
+      <dt>Price</dt><dd class="price">{{ appt.price_cents|bzd }}</dd>
+      <dt>Client</dt><dd>{% if caps.VIEW_CLIENTS %}<a href="/provider/{{ b.id }}/clients/{{ appt.customer.id }}/">{{ appt.customer.name }}</a>{% else %}{{ appt.customer.name }}{% endif %}<br><small>{{ appt.customer.phone|default:"No phone" }}</small></dd>
+      <dt>Booked</dt><dd>{{ appt.get_source_display }} · {{ appt.created_at|date:"j M, g:i A" }}</dd>
+      {% if appt.customer_notes %}<dt>Client's note</dt><dd>{{ appt.customer_notes }}</dd>{% endif %}
+      {% if appt.cancel_reason %}<dt>Reason</dt><dd>{{ appt.cancel_reason }}</dd>{% endif %}
+      {% if appt.status == "pending_approval" %}<dt>Expires</dt><dd>in {{ appt.approval_expires_at|timeuntil }}</dd>{% endif %}
+    </dl>
+    {% if caps.MANAGE_OWN_APPOINTMENTS %}
+    <hr>
+    <div class="row">
+      {% if appt.status == "pending_approval" %}
+        <form method="post" action="approve/">{% csrf_token %}<button class="btn" type="submit">Approve</button></form>
+        <form method="post" action="decline/" class="row" data-confirm="Decline this request?">{% csrf_token %}<input name="reason" placeholder="Reason (optional)" style="width:200px"><button class="btn btn-danger" type="submit">Decline</button></form>
+      {% endif %}
+      {% if appt.status == "confirmed" and appt.starts_at <= now %}
+        <form method="post" action="complete/">{% csrf_token %}<button class="btn" type="submit">Mark completed</button></form>
+        <form method="post" action="no-show/" data-confirm="Mark as no-show?">{% csrf_token %}<button class="btn btn-danger" type="submit">No-show</button></form>
+      {% endif %}
+      {% if appt.status == "no_show" %}<form method="post" action="complete/">{% csrf_token %}<button class="btn btn-secondary" type="submit">Correct: they came</button></form>{% endif %}
+    </div>
+    {% if appt.is_active %}
+    <details style="margin-top:1rem"><summary>Move to another time</summary>
+      <form method="post" action="reschedule/" style="margin-top:.8rem">{% csrf_token %}{% include "includes/form.html" %}<button class="btn btn-secondary" type="submit">Move booking</button>
+      <p class="help muted">You can book outside working hours, but never on top of another booking.</p></form>
+    </details>
+    <details style="margin-top:.6rem"><summary>Cancel booking</summary>
+      <form method="post" action="cancel/" style="margin-top:.8rem" data-confirm="Cancel and notify the client?">{% csrf_token %}<div class="field"><label for="cr">Reason (sent to the client)</label><input id="cr" name="reason" maxlength="200"></div><button class="btn btn-danger" type="submit">Cancel and notify</button></form>
+    </details>
+    {% endif %}
+    {% endif %}
+  </section>
+  <div class="stack">
+    <section class="card card-flat"><h3>Team note</h3>
+      <form method="post" action="notes/">{% csrf_token %}<textarea name="notes" aria-label="Team note" placeholder="Only your team sees this. No medical information.">{{ appt.provider_notes }}</textarea><button class="btn btn-secondary btn-sm" style="margin-top:.5rem" type="submit">Save note</button></form>
+    </section>
+    {% if history %}<section class="card card-flat"><h3>Other visits</h3><ul class="list">{% for h in history %}<li class="spread"><a href="/provider/{{ b.id }}/a/{{ h.id }}/">{{ h.starts_at|date:"j M Y" }} · {{ h.service.name }}</a><span class="badge {{ h.status|status_badge }}">{{ h.get_status_display }}</span></li>{% endfor %}</ul></section>{% endif %}
+    {% if messages_sent %}<section class="card card-flat"><h3>Messages sent</h3><ul class="list">{% for msg in messages_sent %}<li><small>{{ msg.created_at|date:"j M, g:i A" }} · {{ msg.get_audience_display }} · {{ msg.channel }} · {{ msg.template }}</small></li>{% endfor %}</ul></section>{% endif %}
+  </div>
+</div>
+{% endblock %}

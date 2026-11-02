@@ -1,0 +1,26 @@
+{% extends "provider/base.html" %}
+{% block title %}Team{% endblock %}
+{% block content %}
+<div class="page-head"><h1>Team</h1><a class="btn" href="/provider/{{ b.id }}/team/new/">+ Add team member</a></div>
+<section class="card">
+  <h2>Bookable people</h2>
+  <ul class="list">{% for s in staff %}
+    <li class="spread"><span class="row"><span class="avatar avatar-round">{{ s.initials }}</span><span><strong>{{ s.display_name }}</strong> {% if not s.active %}<span class="badge">Inactive</span>{% elif not s.bookable_online %}<span class="badge badge-warn">Not online</span>{% endif %}<br><small>{{ s.title|default:"" }}{% if s.title %} · {% endif %}{{ s.services.all|length }} service{{ s.services.all|length|pluralize }}{% if s.member %} · login: {{ s.member.user.phone }}{% else %} · no login{% endif %}</small></span></span>
+    <span class="row"><a class="btn btn-secondary btn-sm" href="/provider/{{ b.id }}/hours/?staff={{ s.id }}">Hours</a><a class="btn btn-secondary btn-sm" href="/provider/{{ b.id }}/team/{{ s.id }}/">Edit</a></span></li>
+  {% empty %}<li class="empty">Add the people clients can book.</li>{% endfor %}</ul>
+</section>
+<div class="grid grid-2" style="margin-top:1rem;align-items:start">
+  <section class="card">
+    <h2>Logins</h2>
+    <p class="muted">People who can open this dashboard. Staff see their own calendar and clients; only the owner changes services, team, hours and settings.</p>
+    <ul class="list">{% for mem in members %}
+      <li class="spread"><span><strong>{{ mem.user.full_name|default:mem.user.phone }}</strong><br><small>{{ mem.user.phone }} · {{ mem.get_role_display }}{% if mem.status == "invited" %} · <span class="badge badge-warn">Invite pending</span>{% endif %}{% if mem.staff_profile %} · calendar: {{ mem.staff_profile.display_name }}{% endif %}</small></span>
+      {% if mem.role != "owner" %}<form method="post" action="/provider/{{ b.id }}/team/members/{{ mem.id }}/remove/" data-confirm="Remove {{ mem.user }}'s access?">{% csrf_token %}<button class="btn btn-danger btn-sm" type="submit">Remove</button></form>{% endif %}</li>
+    {% endfor %}</ul>
+  </section>
+  <section class="card">
+    <h2>Invite someone</h2>
+    <form method="post" action="/provider/{{ b.id }}/team/invite/">{% csrf_token %}{% with form=invite_form %}{% include "includes/form.html" %}{% endwith %}<button class="btn" type="submit">Send invite</button></form>
+  </section>
+</div>
+{% endblock %}

@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block title %}Your businesses · {{ PLATFORM_NAME }}{% endblock %}
+{% block content %}
+<div class="narrow" style="padding-top:2rem">
+  <h1>Your businesses</h1>
+  {% for m in invites %}
+  <div class="card" style="margin-bottom:1rem">
+    <div class="spread"><span><span class="badge badge-accent">Invitation</span><br><strong>{{ m.business.name }}</strong> invited you to join their team.</span>
+    <form method="post" action="/provider/invites/{{ m.id }}/accept/">{% csrf_token %}<button class="btn" type="submit">Accept</button></form></div>
+  </div>
+  {% endfor %}
+  {% if active %}
+  <div class="card"><ul class="list">{% for m in active %}
+    <li class="spread"><span class="row"><span class="avatar">{{ m.business.initials }}</span><span><strong>{{ m.business.name }}</strong><br><small>{{ m.get_role_display }} · {{ m.business.get_status_display }}</small></span></span><a class="btn btn-sm" href="/provider/{{ m.business_id }}/">Open</a></li>
+  {% endfor %}</ul></div>
+  {% elif not invites %}
+  <div class="card empty">You're not part of any business yet. <a href="/for-business/">List your business</a> or ask your manager to invite this number ({{ user.phone }}).</div>
+  {% endif %}
+</div>
+{% endblock %}

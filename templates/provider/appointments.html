@@ -1,0 +1,26 @@
+{% extends "provider/base.html" %}{% load ui %}
+{% block title %}Appointments{% endblock %}
+{% block content %}
+<div class="page-head"><h1>Appointments</h1>{% if caps.CREATE_BOOKING_FOR_SELF %}<a class="btn" href="/provider/{{ b.id }}/appointments/new/">+ New booking</a>{% endif %}</div>
+<form class="toolbar" method="get">
+  <div class="chips">
+    <a class="chip{% if status == 'upcoming' %} on{% endif %}" href="?status=upcoming">Upcoming</a>
+    <a class="chip{% if status == 'pending' %} on{% endif %}" href="?status=pending">To approve{% if counts.pending %} ({{ counts.pending }}){% endif %}</a>
+    <a class="chip{% if status == 'past' %} on{% endif %}" href="?status=past">Past</a>
+    <a class="chip{% if status == 'cancelled' %} on{% endif %}" href="?status=cancelled">Cancelled</a>
+    <a class="chip{% if status == 'all' %} on{% endif %}" href="?status=all">All</a>
+  </div>
+  <input type="hidden" name="status" value="{{ status }}"><input type="search" name="q" value="{{ q }}" placeholder="Search client or service" aria-label="Search">
+</form>
+{% if rows %}
+<div class="table-wrap"><table class="table">
+  <thead><tr><th>When</th><th>Client</th><th>Service</th><th>With</th><th>Price</th><th>Status</th></tr></thead>
+  <tbody>{% for a in rows %}<tr>
+    <td><a href="/provider/{{ b.id }}/a/{{ a.id }}/">{{ a.starts_at|date:"D j M" }}, {{ a.starts_at|time:"g:i A" }}</a></td>
+    <td>{{ a.customer.name }}<br><small class="muted">{{ a.customer.phone|default:"" }}</small></td>
+    <td>{{ a.service.name }}</td><td>{{ a.staff.display_name }}</td><td class="price">{{ a.price_cents|bzd }}</td>
+    <td><span class="badge {{ a.status|status_badge }}">{{ a.get_status_display }}</span>{% if a.late_cancellation %} <span class="badge badge-accent">Late</span>{% endif %}</td>
+  </tr>{% endfor %}</tbody>
+</table></div>
+{% else %}<div class="card empty">No appointments here.</div>{% endif %}
+{% endblock %}

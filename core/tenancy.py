@@ -31,6 +31,11 @@ def resolve_membership(user, business_id):
 
 
 def attach(request, member):
+    from zoneinfo import ZoneInfo
+
+    from django.utils import timezone
+
+    timezone.activate(ZoneInfo(member.business.timezone))   # forms and templates use the business's clock
     request.membership = member
     request.business = member.business
     request.staff = getattr(member, "staff_profile", None)

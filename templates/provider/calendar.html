@@ -1,0 +1,26 @@
+{% extends "provider/base.html" %}
+{% block title %}Calendar{% endblock %}
+{% block content %}
+<div class="page-head">
+  <h1>{% if view == "week" %}Week of {{ day|date:"j M" }}{% else %}{{ day|date:"l j F" }}{% endif %}</h1>
+  <div class="row">
+    <a class="btn btn-secondary btn-sm" href="?date={{ prev|date:'Y-m-d' }}&view={{ view }}{% if selected %}&staff={{ selected.id }}{% endif %}" aria-label="Previous">‹</a>
+    <a class="btn btn-secondary btn-sm" href="?date={{ today|date:'Y-m-d' }}&view={{ view }}{% if selected %}&staff={{ selected.id }}{% endif %}">Today</a>
+    <a class="btn btn-secondary btn-sm" href="?date={{ next|date:'Y-m-d' }}&view={{ view }}{% if selected %}&staff={{ selected.id }}{% endif %}" aria-label="Next">›</a>
+    {% if caps.CREATE_BOOKING_FOR_SELF %}<a class="btn btn-sm" href="/provider/{{ b.id }}/appointments/new/?date={{ day|date:'Y-m-d' }}">+ New</a>{% endif %}
+  </div>
+</div>
+{% if empty %}
+<div class="card empty">No calendars to show yet. {% if caps.MANAGE_STAFF %}<a href="/provider/{{ b.id }}/team/new/">Add a team member</a>.{% endif %}</div>
+{% else %}
+<form class="toolbar" method="get">
+  <input type="date" name="date" value="{{ day|date:'Y-m-d' }}" data-autosubmit aria-label="Date">
+  <select name="view" data-autosubmit aria-label="View"><option value="day"{% if view == "day" %} selected{% endif %}>Day</option><option value="week"{% if view == "week" %} selected{% endif %}>Week</option></select>
+  {% if staff_all|length > 1 %}<select name="staff" data-autosubmit aria-label="Team member"><option value="">{% if view == "week" %}Choose person{% else %}Everyone{% endif %}</option>{% for s in staff_all %}<option value="{{ s.id }}"{% if selected and selected.id == s.id %} selected{% endif %}>{{ s.display_name }}</option>{% endfor %}</select>{% endif %}
+</form>
+<div id="cal" hx-get="{{ request.get_full_path }}" hx-trigger="every 30s" hx-swap="innerHTML" data-scroll-to="{{ scroll_to }}">
+  {% include "provider/_calendar_grid.html" %}
+</div>
+<div class="legend"><span><i style="background:var(--primary-soft);border-left:3px solid var(--primary)"></i>Confirmed</span><span><i style="background:var(--warn-soft)"></i>Awaiting approval</span><span><i style="background:var(--danger-soft)"></i>No-show</span><span><i style="background:var(--surface-2)"></i>Time off</span><span>Striped = outside working hours · updates every 30 seconds</span></div>
+{% endif %}
+{% endblock %}

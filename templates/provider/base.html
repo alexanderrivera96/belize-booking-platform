@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+<head>
+{% include "includes/head.html" %}
+<title>{% block title %}{{ b.name }}{% endblock %} · {{ PLATFORM_NAME }} for business</title>
+<meta name="robots" content="noindex">
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar" aria-label="Business navigation">
+    <a class="brand" href="/">Book<span>BZ</span></a>
+    <div class="biz-switch"><strong>{{ b.name }}</strong><span class="muted">{{ m.get_role_display }}{% if other_memberships %} · <a href="/provider/">switch</a>{% endif %}</span></div>
+    {% include "provider/_nav.html" with cls="nav-item" %}
+    <div class="spacer"></div>
+    <a class="nav-item" href="/b/{{ b.slug }}/">View public page ↗</a>
+    <a class="nav-item" href="/account/">My account</a>
+    <form method="post" action="/logout/">{% csrf_token %}<button class="nav-item linklike" style="width:100%;text-align:left;padding:.55rem .7rem;color:var(--ink-2)" type="submit">Sign out</button></form>
+  </aside>
+  <div>
+    <nav class="mobile-nav" aria-label="Business navigation">{% include "provider/_nav.html" with cls="" %}</nav>
+    <main class="main">
+      {% include "includes/messages.html" %}
+      {% block content %}{% endblock %}
+    </main>
+  </div>
+</div>
+</body>
+</html>

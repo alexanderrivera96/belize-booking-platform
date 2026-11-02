@@ -1,0 +1,16 @@
+{% extends "provider/base.html" %}
+{% block title %}{{ title }}{% endblock %}
+{% block content %}
+<a class="muted" href="{{ back }}">← Back</a>
+<div class="page-head" style="margin-top:.5rem"><h1>{{ title }}</h1></div>
+<form method="post" class="card" style="max-width:640px">{% csrf_token %}
+  {% if intro %}<p class="muted">{{ intro }}</p>{% endif %}
+  {% if form.non_field_errors %}<ul class="messages"><li class="error">{{ form.non_field_errors|join:" " }}</li></ul>{% endif %}
+  {% for field in form.visible_fields %}
+    {% if field.name == "services" %}
+      <div class="field"><label>{{ field.label }}</label>{% for cb in field %}<label class="checkbox">{{ cb.tag }} {{ cb.choice_label }}</label>{% empty %}<span class="muted">No services yet.</span>{% endfor %}{% if field.errors %}<div class="errors">{{ field.errors|join:" " }}</div>{% endif %}</div>
+    {% else %}{% include "includes/field.html" %}{% endif %}
+  {% endfor %}
+  <button class="btn" type="submit">Save</button>
+</form>
+{% endblock %}

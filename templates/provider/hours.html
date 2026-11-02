@@ -1,0 +1,23 @@
+{% extends "provider/base.html" %}
+{% block title %}Working hours{% endblock %}
+{% block content %}
+<div class="page-head"><h1>Working hours</h1>
+  <form method="get"><select name="staff" data-autosubmit aria-label="Team member">{% for s in staff_list %}<option value="{{ s.id }}"{% if s.id == st.id %} selected{% endif %}>{{ s.display_name }}</option>{% endfor %}</select></form>
+</div>
+<form method="post" class="card" style="max-width:720px">{% csrf_token %}
+  <p class="muted">Weekly hours for <strong>{{ st.display_name }}</strong>. Add a second range for a lunch break. Leave a day empty for a day off. Existing bookings are not changed.</p>
+  {% for wd, name, ranges in days %}
+  <div class="hours-row">
+    <strong>{{ name }}</strong>
+    <div>
+      <div class="ranges" id="ranges-{{ wd }}">
+        {% for r in ranges %}<div class="range"><input type="time" name="start_{{ wd }}" value="{{ r.start_time|time:'H:i' }}" aria-label="{{ name }} start"> – <input type="time" name="end_{{ wd }}" value="{{ r.end_time|time:'H:i' }}" aria-label="{{ name }} end"><button type="button" class="btn btn-ghost btn-sm" data-remove-range>Remove</button></div>{% endfor %}
+      </div>
+      <button type="button" class="btn btn-ghost btn-sm" data-add-range="{{ wd }}">+ Add hours</button>
+    </div>
+  </div>
+  {% endfor %}
+  <button class="btn" type="submit" style="margin-top:1rem">Save hours</button>
+</form>
+<template id="range-template"><div class="range"><input type="time" name="start_DAY" value="09:00" aria-label="Start"> – <input type="time" name="end_DAY" value="17:00" aria-label="End"><button type="button" class="btn btn-ghost btn-sm" data-remove-range>Remove</button></div></template>
+{% endblock %}
