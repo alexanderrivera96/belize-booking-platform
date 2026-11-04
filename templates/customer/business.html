@@ -3,12 +3,13 @@
 {% block description %}{{ b.tagline|default:b.name }} — book online at {{ b.name }} in {{ b.town.name }}.{% endblock %}
 {% block content %}
 <div class="wrap">
+  <div class="biz-hero"><div class="biz-cover cov-{{ b.category.slug }}"><span class="mono" aria-hidden="true">{{ b.initials }}</span></div></div>
   <div class="biz-head">
-    <span class="avatar avatar-lg">{{ b.initials }}</span>
     <div>
-      <h1 style="margin:0">{{ b.name }}</h1>
-      <div class="muted">{{ b.category.name }} · {{ b.town.name }}{% if b.address %} · {{ b.address }}{% endif %}</div>
-      {% if b.booking_policy.requires_approval %}<span class="badge badge-warn">Bookings confirmed by the business</span>{% else %}<span class="badge badge-ok">Instant booking</span>{% endif %}
+      <div class="meta" style="margin-bottom:.35rem">{{ b.category.name }} · {{ b.town.name }}</div>
+      <h1>{{ b.name }}</h1>
+      {% if b.tagline %}<p class="muted" style="margin:.35rem 0 .6rem;font-size:1.05rem">{{ b.tagline }}</p>{% endif %}
+      <div class="row">{% if b.booking_policy.requires_approval %}<span class="badge badge-warn">Bookings confirmed by the business</span>{% else %}<span class="badge badge-ok">Instant booking</span>{% endif %}{% if b.address %}<span class="muted">{{ b.address }}</span>{% endif %}</div>
     </div>
   </div>
   <div class="grid biz-layout">
@@ -19,7 +20,7 @@
         <li class="svc">
           <span class="info"><strong>{{ s.name }}</strong><small>{{ s.duration_min|duration }}{% if s.description %} · {{ s.description }}{% endif %}</small></span>
           <span class="row"><span class="price">{{ s.price_cents|bzd }}</span>
-            <a class="btn btn-sm" href="/b/{{ b.slug }}/book/?service={{ s.id }}">Book</a></span>
+            <a class="btn btn-sm" href="/b/{{ b.slug }}/book/?service={{ s.id }}" aria-label="Book {{ s.name }}">Book</a></span>
         </li>
         {% empty %}<li class="muted">No services listed yet.</li>{% endfor %}
       </ul>

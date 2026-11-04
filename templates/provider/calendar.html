@@ -22,6 +22,6 @@
   {% include "provider/_calendar_grid.html" %}
 </div>
 {% if user.memberships.exists and m.staff_profile %}<form method="post" action="/provider/{{ b.id }}/calendar/feed/{{ m.staff_profile.id }}/" style="margin-top:1rem" data-confirm="Create a new private calendar link? Any old link stops working.">{% csrf_token %}<button class="btn btn-secondary btn-sm" type="submit">📅 Show my bookings in my phone's calendar</button></form>{% endif %}
-<div class="legend"><span><i style="background:var(--primary-soft);border-left:3px solid var(--primary)"></i>Confirmed</span><span><i style="background:var(--warn-soft)"></i>Awaiting approval</span><span><i style="background:var(--danger-soft)"></i>No-show</span><span><i style="background:var(--surface-2)"></i>Time off</span><span>Striped = outside working hours · updates every 30 seconds</span></div>
+<div class="legend"><span><i style="background:#DDEFEC;border:1px solid #9FD0C8"></i>Confirmed</span><span><i style="background:#FFFFFF;border:1.5px dashed #8A3B22"></i>Awaiting approval</span><span><i style="background:#E9ECEB;border:1px solid #C4CBC9"></i>Completed</span><span><i style="background:#F6E1DA;border:1px solid #D9A493"></i>No-show</span><span><i style="background:repeating-linear-gradient(135deg,#EFEBE0 0 4px,#E6E1D4 4px 8px);border:1px solid #DCD8CC"></i>Time off / closed</span><span>Updates every 30 seconds</span></div>
 {% endif %}
 {% endblock %}

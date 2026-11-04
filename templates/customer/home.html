@@ -1,25 +1,67 @@
-{% extends "base.html" %}
+{% extends "base.html" %}{% load ui %}
 {% block content %}
 <section class="hero">
+  <div class="wrap hero-grid">
+    <div class="hero-copy">
+      <span class="eyebrow" style="align-self:flex-start">Now booking across Belize</span>
+      <h1>{{ SITE.home_headline|default:"Book your barber, braider or nail tech in a minute." }}</h1>
+      <p class="lead">{{ SITE.home_subheadline|default:"See real open times, book in one step, and get a reminder before you go." }}</p>
+      {% include "customer/_searchbar.html" %}
+    </div>
+    {% if preview %}
+    <a class="hero-preview" href="/b/{{ preview.business.slug }}/book/?service={{ preview.service.id }}" style="text-decoration:none">
+      <div class="spread" style="align-items:flex-start">
+        <div><div class="muted" style="font-size:.85rem">{{ preview.business.name }} · {{ preview.business.town.name }}</div>
+          <div class="pv-title">{{ preview.service.name }}</div></div>
+        <strong style="font-size:1.1rem">{{ preview.service.price_cents|bzd }}</strong>
+      </div>
+      <div class="muted" style="font-size:.85rem">{{ preview.day|date:"D j M" }} · open times</div>
+      <div class="pv-slots">{% for st in preview.slots %}<span{% if forloop.first %} class="on"{% endif %}>{{ st|time:"g:i" }}</span>{% endfor %}</div>
+      <div class="pv-note"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#7FD1C6" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M21 12a9 9 0 0 1-13.4 7.8L3 21l1.2-4.6A9 9 0 1 1 21 12z"></path></svg>Reminders 24 h and 2 h before</div>
+    </a>
+    {% endif %}
+  </div>
+</section>
+
+<section class="wrap">
+  <h2 class="section-title" style="margin-top:.5rem">Browse by category</h2>
+  <div class="cat-tiles">
+    {% for c in categories %}<a class="cat-tile" href="/search/?category={{ c.slug }}"><span class="cat-ico">{% include "includes/cat_icon.html" with slug=c.slug %}</span>{{ c.name }}</a>{% endfor %}
+  </div>
+
+  <h2 class="section-title">Popular on {{ PLATFORM_NAME }}</h2>
+  {% if featured %}
+  <div class="grid grid-3">{% for biz in featured %}{% include "customer/_biz_card.html" %}{% endfor %}</div>
+  {% else %}<div class="card empty">Businesses are joining now — check back soon.</div>{% endif %}
+
+  <h2 class="section-title">Browse by town</h2>
+  <div class="chips">{% for t in towns %}<a class="chip" href="/search/?town={{ t.slug }}">{{ t.name }}</a>{% endfor %}</div>
+</section>
+
+<section class="how">
   <div class="wrap">
-    <h1>{{ SITE.home_headline|default:"Book your next cut, braids or nails — in under a minute." }}</h1>
-    <p class="lead">{{ SITE.home_subheadline|default:"Find barbers, stylists, nail and lash techs, massage and dental services across Belize. Pick a time, get a WhatsApp reminder, done." }}</p>
-    {% include "customer/_searchbar.html" %}
-    <div class="chips" style="margin-top:1rem">
-      {% for c in categories %}<a class="chip" href="/search/?category={{ c.slug }}">{{ c.name }}</a>{% endfor %}
+    <h2 style="font-size:2rem;margin-bottom:1.75rem">How booking works</h2>
+    <div class="how-grid">
+      <div><span class="step-n">1</span><h3>Pick a real open time</h3><p>Times come straight from the business's calendar, so what you see is actually free. Your time is held while you check out.</p></div>
+      <div><span class="step-n">2</span><h3>Confirm with a code</h3><p>Enter your name and mobile number and we text you a code. No password to remember.{% if not PAYMENTS_ENABLED %} Pay at your visit.{% endif %}</p></div>
+      <div><span class="step-n">3</span><h3>Get reminded</h3><p>Reminders 24 hours and 2 hours before, with a link to reschedule or cancel.</p></div>
     </div>
   </div>
 </section>
+
 <section class="wrap">
-  <h2 class="section-title">Popular on {{ PLATFORM_NAME }}</h2>
-  {% if featured %}
-  <div class="grid grid-2">{% for biz in featured %}{% include "customer/_biz_card.html" %}{% endfor %}</div>
-  {% else %}<div class="card empty">Businesses are joining now — check back soon.</div>{% endif %}
-  <h2 class="section-title">Browse by town</h2>
-  <div class="chips">{% for t in towns %}<a class="chip" href="/search/?town={{ t.slug }}">{{ t.name }}</a>{% endfor %}</div>
-  <div class="card card-flat" style="margin-top:2.5rem">
-    <div class="spread">
-      <div><h2>Run a shop or studio?</h2><p class="muted" style="margin:0">Free 30-day pilot. Online bookings, a calendar for your team and automatic WhatsApp reminders.</p></div>
+  <div class="cta-band">
+    <div class="cta-copy">
+      <h2>Run your bookings from one calendar</h2>
+      <ul>
+        <li>Every booking lands in your team calendar</li>
+        <li>Automatic reminders cut no-shows</li>
+        <li>Your own booking link to share on WhatsApp, Instagram and Facebook</li>
+      </ul>
+    </div>
+    <div class="cta-card">
+      <div class="muted" style="font-weight:600">Free 30-day pilot</div>
+      <div class="big">Free to start</div>
       <a class="btn" href="/for-business/">List your business</a>
     </div>
   </div>

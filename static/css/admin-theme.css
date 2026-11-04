@@ -1,0 +1,41 @@
+/* Admin console colours, matched to the public theme (teal, ink, sand, gold). */
+@font-face { font-family: "Figtree"; src: url("../fonts/figtree-latin.woff2") format("woff2"); font-weight: 300 900; font-display: swap; }
+@font-face { font-family: "Bricolage Grotesque"; src: url("../fonts/bricolage-grotesque-latin.woff2") format("woff2"); font-weight: 200 800; font-display: swap; }
+html[data-theme="light"], :root {
+  --primary: #0E6B67;
+  --secondary: #0A4F4C;
+  --accent: #F2B544;
+  --primary-fg: #FFFFFF;
+  --body-fg: #16201E;
+  --body-bg: #FFFFFF;
+  --body-quiet-color: #55625F;
+  --body-loud-color: #16201E;
+  --header-color: #F2B544;
+  --header-branding-color: #FFFFFF;
+  --header-bg: #16201E;
+  --header-link-color: #FFFFFF;
+  --breadcrumbs-fg: #DDEFEC;
+  --breadcrumbs-link-fg: #FFFFFF;
+  --breadcrumbs-bg: #0E6B67;
+  --link-fg: #0E6B67;
+  --link-hover-color: #0A4F4C;
+  --link-selected-fg: #0A4F4C;
+  --hairline-color: #E3DFD3;
+  --border-color: #DCD8CC;
+  --darkened-bg: #F6F4EE;
+  --selected-bg: #EFEBE0;
+  --selected-row: #FDF3DC;
+  --button-fg: #FFFFFF;
+  --button-bg: #0E6B67;
+  --button-hover-bg: #0A4F4C;
+  --default-button-bg: #16201E;
+  --default-button-hover-bg: #3F4B48;
+  --close-button-bg: #55625F;
+  --close-button-hover-bg: #3F4B48;
+  --object-tools-bg: #3F4B48;
+  --object-tools-hover-bg: #16201E;
+  --font-family-primary: "Figtree", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+}
+#site-name, #site-name a, h1, .module h2, .module caption { font-family: "Bricolage Grotesque", "Figtree", sans-serif; }
+.module h2, .module caption, .inline-group h2 { background: #16201E; color: #FFFFFF; }
+#header { border-bottom: 3px solid #F2B544; }

@@ -2,7 +2,7 @@
 {% block title %}Confirm your booking · {{ b.name }}{% endblock %}
 {% block content %}
 <div class="wrap" style="padding-top:1.5rem">
-  <div class="steps"><span>1 Service</span>›<span>2 Time</span>›<span class="on">3 Your details</span></div>
+  <div class="steps"><span class="done" data-n="✓">Service</span><span class="done" data-n="✓">Time</span><span class="on" data-n="3">Your details</span></div>
   <div class="grid book-layout">
     <section class="card">
       {% if stage == "code" %}

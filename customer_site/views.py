@@ -30,7 +30,7 @@ DAYS_SHOWN = 14
 
 def listed():
     return (Business.objects.filter(status=Business.Status.LISTED)
-            .select_related("category", "town")
+            .select_related("category", "town", "booking_policy")
             .annotate(min_price=Min("services__price_cents", filter=Q(services__active=True)),
                       service_count=Count("services", filter=Q(services__active=True), distinct=True)))
 
@@ -38,11 +38,41 @@ def listed():
 # ---------------------------------------------------------------- marketplace
 
 def home(request):
+    featured = list(listed().filter(featured=True)[:6]) or list(listed().order_by("-created_at")[:6])
     return render(request, "customer/home.html", {
         "categories": Category.objects.filter(active=True),
         "towns": Town.objects.filter(active=True),
-        "featured": listed().filter(featured=True)[:6] or listed().order_by("-created_at")[:6],
+        "featured": featured,
+        "preview": home_preview(featured),
     })
+
+
+def home_preview(businesses):
+    """Real open times for the hero card: the first featured business with free slots in the next week."""
+    from django.core.cache import cache
+    key = "home_preview:" + ",".join(str(b.id) for b in businesses[:3])
+    cached = cache.get(key)
+    if cached is not None:
+        return cached or None
+    preview = {}
+    today = timezone.now()
+    for b in businesses[:3]:
+        service = b.services.filter(active=True).order_by("sort_order", "name").first()
+        if service is None:
+            continue
+        tz = ZoneInfo(b.timezone)
+        for i in range(7):
+            day = (today.astimezone(tz) + timedelta(days=i)).date()
+            slots = available_slots(b, service, None, day)
+            if slots:
+                step = max(1, len(slots) // 6)
+                preview = {"business": b, "service": service, "day": day,
+                           "slots": [st.astimezone(tz) for st, _ in slots[::step][:6]]}
+                break
+        if preview:
+            break
+    cache.set(key, preview, 60)
+    return preview or None
 
 
 def search(request):

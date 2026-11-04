@@ -8,17 +8,17 @@
 <body>
 <header class="topbar">
   <div class="wrap">
-    <a class="brand" href="/">Book<span>BZ</span></a>
+    <a class="brand" href="/" aria-label="{{ PLATFORM_NAME }} home">{% include "includes/logo.html" %}<span>{{ PLATFORM_NAME }}</span></a>
     <nav class="nav" aria-label="Main">
-      <a href="/search/">Explore</a>
+      <a href="/search/">Find a service</a>
       {% if user.is_authenticated %}
         <a href="/me/">My bookings</a>
         {% if user.memberships.exists %}<a href="/provider/">Business</a>{% endif %}
         <a class="hide-sm" href="/account/">Account</a>
         <form class="inline-form" method="post" action="/logout/">{% csrf_token %}<button class="linklike nav-btn" type="submit">Sign out</button></form>
       {% else %}
-        <a href="/login/">Sign in</a>
-        <a class="hide-sm" href="/for-business/">For business</a>
+        <a href="/login/">Log in</a>
+        <a class="btn btn-sm hide-sm" href="/for-business/">List your business</a>
       {% endif %}
     </nav>
   </div>
@@ -29,9 +29,16 @@
   {% block content %}{% endblock %}
 </main>
 <footer class="footer">
-  <div class="wrap spread">
-    <span>© {% now "Y" %} {{ PLATFORM_NAME }} · Made in Belize · Prices in BZ$</span>
-    <span>{% if SITE.support_phone %}Help: {{ SITE.support_phone }} · {% endif %}<a href="/for-business/">List your business</a> · <a href="/privacy/">Privacy</a></span>
+  <div class="wrap">
+    <div class="footer-grid">
+      <div>
+        <span class="brand">{% include "includes/logo.html" %}<span>{{ PLATFORM_NAME }}</span></span>
+        <p style="margin:0;line-height:1.6">Local beauty, grooming and wellness bookings across Belize. Prices in Belize dollars (BZ$).</p>
+      </div>
+      <div><strong>Customers</strong><a href="/search/">Find a service</a><a href="/me/">My bookings</a><a href="/login/">Log in</a></div>
+      <div><strong>Businesses</strong><a href="/for-business/">List your business</a><a href="/login/?next=/provider/">Business log in</a>{% if SITE.support_phone %}<span>Help: {{ SITE.support_phone }}</span>{% endif %}</div>
+    </div>
+    <div class="fine">© {% now "Y" %} {{ PLATFORM_NAME }} · Made in Belize · <a href="/privacy/">Privacy</a></div>
   </div>
 </footer>
 </body>

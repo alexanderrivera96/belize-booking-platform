@@ -1,4 +1,5 @@
-{% extends "admin/base.html" %}
+{% extends "admin/base.html" %}{% load static %}
+{% block extrastyle %}{{ block.super }}<link rel="stylesheet" href="{% static 'css/admin-theme.css' %}">{% endblock %}
 {% block title %}{% if subtitle %}{{ subtitle }} | {% endif %}{{ title }} | {{ site_title|default:"Admin" }}{% endblock %}
 {% block branding %}<div id="site-name"><a href="{% url 'admin:index' %}">{{ site_header|default:"Admin" }}</a> <span style="font-size:.7em;opacity:.75;margin-left:.5em">admin host · MFA</span></div>
 {% if user.is_anonymous %}{% include "admin/color_theme_toggle.html" %}{% endif %}{% endblock %}

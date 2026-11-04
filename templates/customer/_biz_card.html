@@ -1,9 +1,13 @@
 {% load ui %}<a class="card biz-card" href="/b/{{ biz.slug }}/">
-  <span class="avatar avatar-lg">{{ biz.initials }}</span>
-  <span>
-    <strong>{{ biz.name }}</strong><br>
-    <span class="meta">{{ biz.category.name }} · {{ biz.town.name }}</span><br>
-    {% if biz.tagline %}<span class="meta">{{ biz.tagline }}</span><br>{% endif %}
-    {% if biz.min_price %}<span class="badge badge-primary">From {{ biz.min_price|bzd }}</span>{% endif %}
+  <span class="biz-cover cov-{{ biz.category.slug }}">
+    <span class="mono" aria-hidden="true">{{ biz.initials }}</span>
+    {% if biz.booking_policy.requires_approval %}<span class="tag approval">Approval needed</span>{% else %}<span class="tag">Instant booking</span>{% endif %}
+  </span>
+  <span class="biz-body">
+    <span class="meta">{{ biz.category.name }} · {{ biz.town.name }}</span>
+    <h3>{{ biz.name }}</h3>
+    {% if biz.tagline %}<span class="muted">{{ biz.tagline }}</span>{% endif %}
+    {% if biz.min_price %}<span>From <strong>{{ biz.min_price|bzd }}</strong>{% if biz.service_count %} · {{ biz.service_count }} service{{ biz.service_count|pluralize }}{% endif %}</span>{% endif %}
+    <span class="btn btn-sm" style="margin-top:.6rem;align-self:flex-start">See open times</span>
   </span>
 </a>
